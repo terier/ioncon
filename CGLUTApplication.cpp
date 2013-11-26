@@ -59,7 +59,7 @@ void CGLUTApplication::init()
 	Camera->setPosition(vec3(15,10,30));
 	Camera->setFocus(vec3(10,0,10));
 
-	CMesh* m = new CMesh("models/gun.obj", "models/");
+	CMesh* m = new CMesh("models/Corvette.obj", "models/");
 	CObjectMesh* obj = new CObjectMesh(m);
 	obj->setPosition(vec3(10,0,10));
 	Scene->addObjectToRoot(obj);
