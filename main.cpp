@@ -10,5 +10,6 @@ int main(int argc, char **argv)
 	CGLUTInterface::connect(&app);
 	glutMainLoop();
 	
+	printf("testiram...\n");
 	return 1;
 }
