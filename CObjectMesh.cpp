@@ -5,24 +5,24 @@ void CObjectMesh::render()
 	glPushMatrix();
 	transform();
 
-	if (mesh)
+	if (Mesh)
 	{
-		const VertexBuffer& verts = mesh->getVertexBufferRef();
-		const IndexBuffer& inds = mesh->getIndexBufferRef();
-
-		vec3 pos(getPosition());
-		vec3 rot(getRotation());
-
-		glBegin(GL_TRIANGLES);
-		for (uint i=0; i<inds.size(); i++)
+		const ShapeVector& shapes = Mesh->getShapes();
+		for (ShapeVector::const_iterator shape = shapes.begin(); shape != shapes.end(); shape++)
 		{
-			const CVertex& v1 = verts[inds[i]];
-			glColor3f(v1.col.X, v1.col.Y, v1.col.Z);
-			glTexCoord2f(v1.tex.X, v1.tex.Y);
-			glNormal3f(v1.nor.X, v1.nor.Y, v1.nor.Z);
-			glVertex3f(v1.pos.X, v1.pos.Y, v1.pos.Z);
+			const mesh_t& m = shape->mesh;
+			const FloatVector& pos = m.positions;
+			const FloatVector& nor = m.normals;
+			const UintVector& ind = m.indices;
+			glBegin(GL_TRIANGLES);
+			glColor3f(1.f,0.f, 0.5f);
+			for (size_t i=0; i<ind.size(); i++)
+			{
+				glNormal3f(nor[3*ind[i]], nor[3*ind[i]+1], nor[3*ind[i]+2]);
+				glVertex3f(pos[3*ind[i]], pos[3*ind[i]+1], pos[3*ind[i]+2]);
+			}
+			glEnd();
 		}
-		glEnd();
 	}
 
 	CObject::render(); // render children

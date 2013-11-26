@@ -3,24 +3,25 @@
 
 #include "CVertex.h"
 #include <vector>
+#include <string>
+#include "tiny_obj_loader.h"
+
+using namespace tinyobj;
 
 typedef unsigned int uint;
-typedef std::vector<CVertex> VertexBuffer;
-typedef std::vector<uint> IndexBuffer;
+typedef std::vector<shape_t> ShapeVector;
+typedef std::vector<uint> UintVector;
+typedef std::vector<float> FloatVector;
 
 class CMesh
 {
 public:
-	CMesh() {}
-	const VertexBuffer& getVertexBufferRef() const { return vertices; }
-	const IndexBuffer& getIndexBufferRef() const { return indices; }
-	void addVertex(const CVertex& v) { vertices.push_back(v); }
-	CVertex& getVertex(int i) { return vertices[i]; }
-	void addTriangle(uint v1, uint v2, uint v3);
+	CMesh(const char* fname, const char* base = NULL);
+
+	const ShapeVector& getShapes() const { return Shapes; }
 
 private:
-	VertexBuffer vertices;
-	IndexBuffer indices;
+	ShapeVector Shapes;
 };
 
 #endif

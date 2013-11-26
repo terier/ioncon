@@ -5,7 +5,7 @@
 
 CMesh* COBJLoader::loadMesh(char* filename)
 {
-	printf("Loading OBJ file %s...\n", filename);
+	/*printf("Loading OBJ file %s...\n", filename);
 	CMesh* ret = new CMesh();
 	char ch;
 	float v1, v2, v3, n1, n2, n3, t1, t2;
@@ -61,5 +61,6 @@ CMesh* COBJLoader::loadMesh(char* filename)
 
 	fclose(f);
 
-	return ret;
+	return ret;*/
+	return 0;
 }

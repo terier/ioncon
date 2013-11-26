@@ -1,6 +1,7 @@
 #include "CGLUTApplication.h"
 #include <stdio.h>
 
+#include "CObjectMesh.h"
 #include "CObjectShapes.h"
 #include "CObjectMotionState.h"
 #include "utils.h"
@@ -39,7 +40,7 @@ CGLUTApplication::~CGLUTApplication()
 void CGLUTApplication::init()
 {
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
@@ -58,37 +59,10 @@ void CGLUTApplication::init()
 	Camera->setPosition(vec3(15,10,30));
 	Camera->setFocus(vec3(10,0,10));
 
-	CObject* obj2 = new CObjectPlane(20.f, 10);
-	Scene->addObjectToRoot(obj2);
-
-	btDynamicsWorld* dynamicsWorld = Physics->getWorld();
-	dynamicsWorld->setGravity(btVector3(0,-50,0));
-	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
-    btCollisionShape* fallShape = new btSphereShape(1);
-    btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0)));
-    btRigidBody::btRigidBodyConstructionInfo
-            groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
-	groundRigidBodyCI.m_restitution = 0.7f;
-	groundRigidBodyCI.m_friction = 0.8f;
-    btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-    dynamicsWorld->addRigidBody(groundRigidBody);
-
-	btVector3 inertia;
-	fallShape->calculateLocalInertia(1.f, inertia);
-	for (int i=0; i<70; i++)
-	{
-		CObject* object = new CObjectSphere(1.f);
-		Scene->addObjectToRoot(object);
-		btMotionState* ms = new CObjectMotionState(btTransform(btQuaternion(0,0,0,1),
-			btVector3(rand() % 20, 5 + rand() % 20, rand() % 20)), object);
-			//btVector3(10,1,10)), object);
-		btRigidBody::btRigidBodyConstructionInfo ci(1.f, ms, fallShape, inertia);
-		ci.m_restitution = 0.7f;
-		ci.m_friction = 0.5f;
-		btRigidBody* body = new btRigidBody(ci);
-		body->applyImpulse(btVector3(0,2,0), btVector3(rand()%2,0,rand()%2));
-		dynamicsWorld->addRigidBody(body);
-	}
+	CMesh* m = new CMesh("models/gun.obj", "models/");
+	CObjectMesh* obj = new CObjectMesh(m);
+	obj->setPosition(vec3(10,0,10));
+	Scene->addObjectToRoot(obj);
 }
 
 void CGLUTApplication::step()

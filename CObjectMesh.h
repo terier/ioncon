@@ -7,15 +7,15 @@
 class CObjectMesh : public CObject
 {
 public:
-	CObjectMesh(CMesh* Mesh, CObject* Parent = 0, const vec3& Pos = vec3(), const vec3& Rot = vec3()) :
-		CObject(Parent, Pos, Rot), mesh(Mesh)
+	CObjectMesh(CMesh* mesh, CObject* parent = 0, const vec3& pos = vec3(), const vec3& rot = vec3()) :
+		CObject(parent, pos, rot), Mesh(mesh)
 	{
 	}
 
 	void render();
 
 private:
-	CMesh* mesh;
+	CMesh* Mesh;
 };
 
 #endif

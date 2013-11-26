@@ -1,8 +1,12 @@
 #include "CMesh.h"
+#include <iostream>
+#include <assert.h>
 
-void CMesh::addTriangle(uint v1, uint v2, uint v3)
+CMesh::CMesh(const char* fname, const char* base)
 {
-	indices.push_back(v1);
-	indices.push_back(v2);
-	indices.push_back(v3);
+	std::string err = LoadObj(Shapes, fname, base);
+	if (!err.empty())
+		std::cout << err << "\n";
+	else
+		printf("Loaded %s\n", fname);
 }
