@@ -40,7 +40,7 @@ CGLUTApplication::~CGLUTApplication()
 void CGLUTApplication::init()
 {
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
@@ -59,10 +59,12 @@ void CGLUTApplication::init()
 	Camera->setPosition(vec3(15,10,30));
 	Camera->setFocus(vec3(10,0,10));
 
-	CMesh* m = new CMesh("models/gun.obj", "models/");
+	CMesh* m = new CMesh("models/futuristic.obj", "models/");
 	CObjectMesh* obj = new CObjectMesh(m);
 	obj->setPosition(vec3(10,0,10));
 	Scene->addObjectToRoot(obj);
+
+	obj->setTexture(loadTexture("images/tyreTexture.png"));
 }
 
 void CGLUTApplication::step()

@@ -13,11 +13,13 @@ void CObjectMesh::render()
 			const mesh_t& m = shape->mesh;
 			const FloatVector& pos = m.positions;
 			const FloatVector& nor = m.normals;
+			const FloatVector& tex = m.texcoords;
 			const UintVector& ind = m.indices;
 			glBegin(GL_TRIANGLES);
-			glColor3f(1.f,0.f, 0.5f);
+			glBindTexture(GL_TEXTURE_2D, Texture);
 			for (size_t i=0; i<ind.size(); i++)
 			{
+				glTexCoord2f(tex[2*ind[i]], tex[2*ind[i]+1]);
 				glNormal3f(nor[3*ind[i]], nor[3*ind[i]+1], nor[3*ind[i]+2]);
 				glVertex3f(pos[3*ind[i]], pos[3*ind[i]+1], pos[3*ind[i]+2]);
 			}
