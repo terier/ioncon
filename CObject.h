@@ -5,8 +5,6 @@
 #include "CMesh.h"
 #include "opengl.h"
 
-class CObject;
-
 typedef std::list<CObject*> ObjectList;
 typedef ObjectList::iterator ObjectIter;
 
