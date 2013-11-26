@@ -10,5 +10,5 @@ int main(int argc, char **argv)
 	CGLUTInterface::connect(&app);
 	glutMainLoop();
 	
-	return 2; // doesn't happen
+	return 1;
 }
