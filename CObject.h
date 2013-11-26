@@ -21,6 +21,7 @@ public:
 
 	virtual ~CObject()
 	{
+		setParent(0);
 		for (ObjectIter it = Children.begin(); it != Children.end(); it++)
 			delete *it;
 	}

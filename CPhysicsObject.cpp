@@ -4,6 +4,7 @@
 CPhysicsObject::CPhysicsObject(CObject* object, btCollisionShape* shape, btDynamicsWorld* world, float mass)
 {
 	Object = object;
+	World = world;
 
 	btVector3 inertia;
 	shape->calculateLocalInertia(1.f, inertia);
@@ -17,3 +18,13 @@ CPhysicsObject::CPhysicsObject(CObject* object, btCollisionShape* shape, btDynam
 
 	world->addRigidBody(RBody);
 }
+
+CPhysicsObject::~CPhysicsObject() {
+	World->removeRigidBody(RBody);
+	delete RBody;
+	delete Object;
+}
+
+CObject* CPhysicsObject::getObject() { return Object; }
+
+btRigidBody* CPhysicsObject::getRigidBody() { return RBody; }

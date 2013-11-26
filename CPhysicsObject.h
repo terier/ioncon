@@ -9,9 +9,12 @@ class CPhysicsObject
 public:
 	CPhysicsObject(CObject* object, btCollisionShape* shape, btDynamicsWorld* world, float mass);
 	~CPhysicsObject();
+	CObject* getObject();
+	btRigidBody* getRigidBody();
 private:
 	CObject* Object;
 	btRigidBody* RBody;
+	btDynamicsWorld* World;
 };
 
 #endif
