@@ -86,7 +86,7 @@ void CGLUTApplication::init()
 		ci.m_restitution = 0.7f;
 		ci.m_friction = 0.5f;
 		btRigidBody* body = new btRigidBody(ci);
-		//body->applyImpulse(btVector3(0,2,0), btVector3(rand()%2,0,rand()%2));
+		body->applyImpulse(btVector3(0,2,0), btVector3(rand()%2,0,rand()%2));
 		dynamicsWorld->addRigidBody(body);
 	}
 }
