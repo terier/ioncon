@@ -71,13 +71,13 @@ void CGLUTApplication::step()
 	Physics->getWorld()->stepSimulation(dt, 10);
 	Scene->animate(dt);
 
-	if (KeyDown['w'])
+	if (KeyDown['w'] || KeyDown['W'] )
 		Camera->moveForward();
-	if (KeyDown['s'])
+	if (KeyDown['s'] || KeyDown['S'])
 		Camera->moveBackward();
-	if (KeyDown['a'])
+	if (KeyDown['a'] || KeyDown['A'])
 		Camera->moveLeft();
-	if (KeyDown['d'])
+	if (KeyDown['d'] || KeyDown['D'])
 		Camera->moveRight();
 	if (KeyDown[27])
 		exit(0);
