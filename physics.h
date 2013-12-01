@@ -4,5 +4,6 @@
 #include <btBulletDynamicsCommon.h>
 #include "CObjectMotionState.h"
 #include "CPhysicsWorld.h"
+#include "CPhysicsObject.h"
 
 #endif

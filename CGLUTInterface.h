@@ -9,7 +9,7 @@ class CGLUTInterface
 public:
 	static void connect(CEventReceiver* er)
 	{
-		printf("Connectiong application interface...\n");
+		printf("Connecting application interface...\n");
 		EventReceiver = er;
 
 		glutDisplayFunc(displayFunc);

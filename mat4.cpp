@@ -146,7 +146,7 @@ mat4 mat4::operator*(const mat4& m)
 	for (int i=0; i<4; i++)
 		for (int j=0; j<4; j++)
 			for (int k=0; k<4; k++)
-				ret.M[i+4*j] += M[i+4*k] * m.M[k+4*j];
+				ret.M[i+4*j] += M[k+4*i] * m.M[j+4*k];
 	return ret;
 }
 
@@ -156,6 +156,16 @@ vec3 mat4::operator*(const vec3& v)
 	float m[4] = {v.X, v.Y, v.Z, 1};
 	for (int i=0; i<4; i++)
 		for (int k=0; k<4; k++)
-			r[i] += M[i+4*k] * m[k];
+			r[i] += M[k+4*i] * m[k];
 	return vec3(r[0]/r[3], r[1]/r[3], r[2]/r[3]);
+}
+
+vec3 mat4::mulnorm(const vec3& v)
+{
+	float r[4] = {0};
+	float m[4] = {v.X, v.Y, v.Z, 0};
+	for (int i=0; i<4; i++)
+		for (int k=0; k<4; k++)
+			r[i] += M[k+4*i] * m[k];
+	return vec3(r[0], r[1], r[2]);
 }

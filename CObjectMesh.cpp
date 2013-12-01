@@ -15,8 +15,8 @@ void CObjectMesh::render()
 			const FloatVector& nor = m.normals;
 			const FloatVector& tex = m.texcoords;
 			const UintVector& ind = m.indices;
-			glBegin(GL_TRIANGLES);
 			glBindTexture(GL_TEXTURE_2D, Texture);
+			glBegin(GL_TRIANGLES);
 			for (size_t i=0; i<ind.size(); i++)
 			{
 				glTexCoord2f(tex[2*ind[i]], tex[2*ind[i]+1]);

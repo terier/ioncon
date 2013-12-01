@@ -34,6 +34,7 @@ struct mat4
 
 	mat4 operator*(const mat4& m);
 	vec3 operator*(const vec3& v);
+	vec3 mulnorm(const vec3& v);
 
 	float M[16];
 };

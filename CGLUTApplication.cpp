@@ -1,10 +1,12 @@
 #include "CGLUTApplication.h"
 #include <stdio.h>
 
+#include "CObjectSpline.h"
 #include "CObjectMesh.h"
 #include "CObjectShapes.h"
 #include "CObjectMotionState.h"
 #include "utils.h"
+#include "physics.h"
 
 CGLUTApplication::CGLUTApplication(const SGLUTParameters& param) :
 	DoubleBuffering(param.DoubleBuffering)
@@ -59,12 +61,29 @@ void CGLUTApplication::init()
 	Camera->setPosition(vec3(15,10,30));
 	Camera->setFocus(vec3(10,0,10));
 
-	CMesh* m = new CMesh("models/futuristic.obj", "models/");
+	CMesh* m = new CMesh("models/gun.obj", "models/");
 	CObjectMesh* obj = new CObjectMesh(m);
 	obj->setPosition(vec3(10,0,10));
 	Scene->addObjectToRoot(obj);
 
-	obj->setTexture(loadTexture("images/tyreTexture.png"));
+	obj->setTexture(loadTexture("images/guntex.png"));
+
+	CSpline* spline = new CSpline();
+	spline->addControlPoint(SControlPoint(vec3(1,0,3),vec3(-1,0,-3),vec3(2,0,-1),vec3(2,5,-1)));
+	spline->addControlPoint(SControlPoint(vec3(4,0,1),vec3(3,0,0),vec3(2,0,0),vec3(2,5,0)));
+	spline->addControlPoint(SControlPoint(vec3(7,0,2),vec3(0,0,3),vec3(-2,0,0),vec3(-2,5,0)));
+	spline->addControlPoint(SControlPoint(vec3(6,0,5),vec3(0,0,2),vec3(3,0,0),vec3(3,5,0)));
+	spline->addControlPoint(SControlPoint(vec3(10,0,6),vec3(0,0,3),vec3(-2,0,2),vec3(-2,5,2)));
+	spline->addControlPoint(SControlPoint(vec3(7,0,9),vec3(-3,0,1),vec3(-1,0,-1),vec3(-1,5,-1)));
+	spline->addControlPoint(SControlPoint(vec3(4,0,7),vec3(0,0,-4),vec3(-2,0,1),vec3(-2,5,1)));
+	//spline->makeCatmullRom();
+	std::vector<vec3> stencil;
+	stencil.push_back(vec3(-0.2f,0.1f,0));
+	stencil.push_back(vec3(-0.1f,0,0));
+	stencil.push_back(vec3(0.1f,0,0));
+	stencil.push_back(vec3(0.2f,0.1f,0));
+	CObjectSpline* objSpline = new CObjectSpline(spline, stencil, 100);
+	Scene->addObjectToRoot(objSpline);
 }
 
 void CGLUTApplication::step()

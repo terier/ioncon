@@ -1,14 +1,14 @@
 //
 // Copyright 2012-2013, Syoyo Fujita.
-// 
+//
 // Licensed under 2-clause BSD liecense.
 //
 
 //
 // version 0.9.6: Support Ni(index of refraction) mtl parameter.
-//                Parse transmittance material parameter correctly.
+// Parse transmittance material parameter correctly.
 // version 0.9.5: Parse multiple group name.
-//                Add support of specifying the base path to load material file.
+// Add support of specifying the base path to load material file.
 // version 0.9.4: Initial suupport of group tag(g)
 // version 0.9.3: Fix parsing triple 'x/y/z'
 // version 0.9.2: Add more .mtl load support
@@ -62,7 +62,7 @@ static inline bool isNewLine(const char c) {
   return (c == '\r') || (c == '\n') || (c == '\0');
 }
 
-// Make index zero-base, and also support relative index. 
+// Make index zero-base, and also support relative index.
 static inline int fixIndex(int idx, int n)
 {
   int i;
@@ -146,10 +146,10 @@ static vertex_index parseTriple(
     }
 
     // i/j/k
-    token++;  // skip '/'
+    token++; // skip '/'
     vi.vn_idx = fixIndex(atoi(token), vnsize);
     token += strcspn(token, "/ \t\r");
-    return vi; 
+    return vi;
 }
 
 static unsigned int
@@ -170,7 +170,7 @@ updateVertex(
     return it->second;
   }
 
-  assert(in_positions.size() > (3*i.v_idx+2));
+  assert((int)in_positions.size() > (3*i.v_idx+2));
 
   positions.push_back(in_positions[3*i.v_idx+0]);
   positions.push_back(in_positions[3*i.v_idx+1]);
@@ -297,8 +297,8 @@ std::string LoadMtl (
 
   material_t material;
   
-  int maxchars = 8192;  // Alloc enough size.
-  std::vector<char> buf(maxchars);  // Alloc enough size.
+  int maxchars = 8192; // Alloc enough size.
+  std::vector<char> buf(maxchars); // Alloc enough size.
   while (ifs.peek() != -1) {
     ifs.getline(&buf[0], maxchars);
 
@@ -324,7 +324,7 @@ std::string LoadMtl (
     assert(token);
     if (token[0] == '\0') continue; // empty line
     
-    if (token[0] == '#') continue;  // comment line
+    if (token[0] == '#') continue; // comment line
     
     // new mtl
     if ((0 == strncmp(token, "newmtl", 6)) && isSpace((token[6]))) {
@@ -484,8 +484,8 @@ LoadObj(
   std::map<std::string, material_t> material_map;
   material_t material;
 
-  int maxchars = 8192;  // Alloc enough size.
-  std::vector<char> buf(maxchars);  // Alloc enough size.
+  int maxchars = 8192; // Alloc enough size.
+  std::vector<char> buf(maxchars); // Alloc enough size.
   while (ifs.peek() != -1) {
     ifs.getline(&buf[0], maxchars);
 
@@ -511,7 +511,7 @@ LoadObj(
     assert(token);
     if (token[0] == '\0') continue; // empty line
     
-    if (token[0] == '#') continue;  // comment line
+    if (token[0] == '#') continue; // comment line
 
     // vertex
     if (token[0] == 'v' && isSpace((token[1]))) {
@@ -588,7 +588,7 @@ LoadObj(
 
       std::string err_mtl = LoadMtl(material_map, namebuf, mtl_basepath);
       if (!err_mtl.empty()) {
-        faceGroup.clear();  // for safety
+        faceGroup.clear(); // for safety
         return err_mtl;
       }
       continue;
@@ -655,7 +655,7 @@ LoadObj(
   if (ret) {
     shapes.push_back(shape);
   }
-  faceGroup.clear();  // for safety
+  faceGroup.clear(); // for safety
 
   return err.str();
 }

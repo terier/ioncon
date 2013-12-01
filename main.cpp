@@ -6,6 +6,8 @@
 int main(int argc, char **argv)
 {
 	SGLUTParameters param;
+	param.FSAA = true;
+	param.WindowTitle = "IonCon 0.1";
 	CGLUTApplication app(param);
 	CGLUTInterface::connect(&app);
 	glutMainLoop();
