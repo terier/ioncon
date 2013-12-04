@@ -22,19 +22,27 @@ struct mat4
 	mat4(MATRIX_TYPE mt = MT_IDENTITY, float* data = 0);
 	mat4(const mat4& m);
 
-	void setNull();
-	void setIdentity();
-	void setTranslate(const vec3& v);
-	void setScale(const vec3& v);
-	void setRotateX(float a);
-	void setRotateY(float a);
-	void setRotateZ(float a);
-	void setRotate(const vec3& a);
-	void setProjection(float d);
+	mat4& setNull();
+	mat4& setIdentity();
+	mat4& setTranslate(const vec3& v);
+	mat4& setScale(const vec3& v);
+	mat4& setRotateX(float a);
+	mat4& setRotateY(float a);
+	mat4& setRotateZ(float a);
+	mat4& setRotate(const vec3& a);
+	mat4& setProjection(float d);
+
+	mat4& setTo(const mat4& m);
+
+	mat4& transpose();
+	mat4 getTransposed();
 
 	mat4 operator*(const mat4& m);
 	vec3 operator*(const vec3& v);
 	vec3 mulnorm(const vec3& v);
+
+	mat4& operator=(const mat4& m);
+	mat4& operator*=(const mat4& m);
 
 	float M[16];
 };

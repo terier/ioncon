@@ -2,7 +2,8 @@
 #define OBJECT_H_INCL
 
 #include <list>
-#include "CMesh.h"
+#include "utils.h"
+#include "mat4.h"
 #include "opengl.h"
 
 class CObject;
@@ -13,18 +14,8 @@ typedef ObjectList::iterator ObjectIter;
 class CObject
 {
 public:
-	CObject(CObject* parent = 0, const vec3& pos = vec3(), const vec3& rot = vec3()) :
-		Parent(0), Position(pos), Rotation(rot), Texture(0)
-	{
-		setParent(Parent);
-	}
-
-	virtual ~CObject()
-	{
-		setParent(0);
-		for (ObjectIter it = Children.begin(); it != Children.end(); it++)
-			delete *it;
-	}
+	CObject(CObject* parent = 0, const vec3& pos = vec3(), const vec3& rot = vec3());
+	virtual ~CObject();
 
 	CObject* getParent() const { return Parent; }
 	vec3 getPosition() const { return Position; }
@@ -32,34 +23,21 @@ public:
 	uint getTexture() const { return Texture; }
 
 	void setParent(CObject* parent);
-	void setPosition(const vec3& v) { Position = v; }
-	void setRotation(const vec3& v) { Rotation = v; }
+	void setPosition(const vec3& v) { Position = v; updateTransformation(); }
+	void setRotation(const vec3& v) { Rotation = v; updateTransformation(); }
 	void setTexture(uint tex) { Texture = tex; }
 
-	virtual void render()
-	{
-		for (ObjectIter it = Children.begin(); it != Children.end(); it++)
-			(*it)->render();
-	}
+	virtual void render();
+	virtual void animate(float dt);
 
-	void transform()
-	{
-		glTranslatef(Position.X, Position.Y, Position.Z);
-		glRotatef(Rotation.X, 1,0,0);
-		glRotatef(Rotation.Y, 0,1,0);
-		glRotatef(Rotation.Z, 0,0,1);
-	}
-
-	virtual void animate(float dt)
-	{
-		if (dt > 0)
-			for (ObjectIter it = Children.begin(); it != Children.end(); it++)
-				(*it)->animate(dt);
-	}
+	void transform();
+	void updateTransformation();
+	mat4& getTransformationPointer() { return Transformation; }
 
 private:
 	vec3 Position;
 	vec3 Rotation;
+	mat4 Transformation;
 	uint Texture;
 
 	CObject* Parent;

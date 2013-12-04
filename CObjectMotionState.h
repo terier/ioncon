@@ -31,7 +31,7 @@ public:
 	{
 		if (Object)
 		{
-			btQuaternion q = wt.getRotation();
+			/*btQuaternion q = wt.getRotation();
 			float w, x, y, z;
 			w = q.getW();
 			x = q.getX();
@@ -45,7 +45,8 @@ public:
 			btVector3 r = wt.getOrigin();
 			vec3 pos(r.getX(), r.getY(), r.getZ());
 			Object->setRotation(rot * RADTODEG);
-			Object->setPosition(pos);
+			Object->setPosition(pos);*/
+			wt.getOpenGLMatrix(Object->getTransformationPointer().M);
 		}
 	}
 

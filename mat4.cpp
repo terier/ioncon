@@ -44,39 +44,42 @@ mat4::mat4(MATRIX_TYPE mt, float* v)
 
 mat4::mat4(const mat4& m)
 {
-	for (int i=0; i<16; i++)
-		M[i] = m.M[i];
+	setTo(m);
 }
 
-void mat4::setNull()
+mat4& mat4::setNull()
 {
 	for (int i=0; i<16; i++)
 		M[i] = 0;
+	return *this;
 }
 
-void mat4::setIdentity()
+mat4& mat4::setIdentity()
 {
 	setNull();
 	M[0] = M[5] = M[10] = M[15] = 1;
+	return *this;
 }
 
-void mat4::setTranslate(const vec3& v)
+mat4& mat4::setTranslate(const vec3& v)
 {
 	setIdentity();
 	M[3] = v.X;
 	M[7] = v.Y;
 	M[11] = v.Z;
+	return *this;
 }
 
-void mat4::setScale(const vec3& v)
+mat4& mat4::setScale(const vec3& v)
 {
 	setNull();
 	M[0] = v.X;
 	M[5] = v.Y;
 	M[10] = v.Z;
+	return *this;
 }
 
-void mat4::setRotateX(float a)
+mat4& mat4::setRotateX(float a)
 {
 	float c = cos(a);
 	float s = sin(a);
@@ -85,9 +88,11 @@ void mat4::setRotateX(float a)
 	M[5] = M[10] = c;
 	M[6] = -s;
 	M[9] = s;
+
+	return *this;
 }
 
-void mat4::setRotateY(float a)
+mat4& mat4::setRotateY(float a)
 {
 	float c = cos(a);
 	float s = sin(a);
@@ -96,9 +101,11 @@ void mat4::setRotateY(float a)
 	M[0] = M[10] = c;
 	M[8] = -s;
 	M[2] = s;
+
+	return *this;
 }
 
-void mat4::setRotateZ(float a)
+mat4& mat4::setRotateZ(float a)
 {
 	float c = cos(a);
 	float s = sin(a);
@@ -107,9 +114,11 @@ void mat4::setRotateZ(float a)
 	M[0] = M[5] = c;
 	M[1] = -s;
 	M[4] = s;
+
+	return *this;
 }
 
-void mat4::setRotate(const vec3& a)
+mat4& mat4::setRotate(const vec3& a)
 {
 	float cx = cos(a.X);
 	float sx = sin(a.X);
@@ -131,13 +140,23 @@ void mat4::setRotate(const vec3& a)
 	M[10] = cx * cy;
 	M[11] = M[12] = M[13] = M[14] = 0;
 	M[15] = 1;
+
+	return *this;
 }
 
-void mat4::setProjection(float d)
+mat4& mat4::setProjection(float d)
 {
 	setIdentity();
 	M[15] = 0;
 	M[14] = 1.f / d;
+	return *this;
+}
+
+mat4& mat4::setTo(const mat4& m)
+{
+	for (int i=0; i<16; i++)
+		M[i] = m.M[i];
+	return *this;
 }
 
 mat4 mat4::operator*(const mat4& m)
@@ -146,7 +165,7 @@ mat4 mat4::operator*(const mat4& m)
 	for (int i=0; i<4; i++)
 		for (int j=0; j<4; j++)
 			for (int k=0; k<4; k++)
-				ret.M[i+4*j] += M[k+4*i] * m.M[j+4*k];
+				ret.M[i+4*j] += M[k+4*j] * m.M[i+4*k];
 	return ret;
 }
 
@@ -168,4 +187,39 @@ vec3 mat4::mulnorm(const vec3& v)
 		for (int k=0; k<4; k++)
 			r[i] += M[k+4*i] * m[k];
 	return vec3(r[0], r[1], r[2]);
+}
+
+mat4& mat4::operator=(const mat4& m)
+{
+	setTo(m);
+}
+
+mat4& mat4::operator*=(const mat4& m)
+{
+	setTo((*this) * m);
+	return *this;
+}
+
+mat4& mat4::transpose()
+{
+	float T;
+	for (int i=0; i<3; i++)
+	{
+		for (int j=i+1; j<4; j++)
+		{
+			T = M[i+4*j];
+			M[i+4*j] = M[j+4*i];
+			M[j+4*i] = T;
+		}
+	}
+	return *this;
+}
+
+mat4 mat4::getTransposed()
+{
+	mat4 ret(MT_NULL);
+	for (int i=0; i<4; i++)
+		for (int j=0; j<4; j++)
+			ret.M[i+4*j] = M[j+4*i];
+	return ret;
 }

@@ -62,12 +62,12 @@ void CGLUTApplication::init()
 	Scene->setActiveCamera(Camera);
 
 	Camera->setPosition(vec3(15,10,30));
-	Camera->setFocus(vec3(10,0,10));
 	Camera->setSpeed(50.f);
 
 	CMesh* m = new CMesh("models/gun.obj", "models/");
 	CObjectMesh* obj = new CObjectMesh(m);
 	obj->setPosition(vec3(10,5,10));
+	obj->setRotation(vec3(10,10,10));
 	Scene->addObjectToRoot(obj);
 
 	uint guntex = Scene->loadTexture("images/guntex.png");
@@ -79,7 +79,7 @@ void CGLUTApplication::init()
 	objSpline->setTexture(roadtex);
 
 	// physics demo
-	/*uint texture = Scene->loadTexture("art.png");
+	uint texture = Scene->loadTexture("images/art.png");
 	CObjectPlane* plane = new CObjectPlane(20.f, 5);
 	plane->setTexture(texture);
 	Scene->addObjectToRoot(plane);
@@ -88,8 +88,8 @@ void CGLUTApplication::init()
 	planeObject->getRigidBody()->setRestitution(0.7f);
 
 	plane = new CObjectPlane(20.f, 5);
-	plane->setRotation(vec3(90.f, 0, 0));
-	plane->setPosition(vec3(0, 20.f, 0));
+	plane->setRotation(vec3(90.f * DEGTORAD, 0, 0));
+	plane->setPosition(vec3(0,20,0));
 	plane->setTexture(texture);
 	Scene->addObjectToRoot(plane);
 	planeShape = new btStaticPlaneShape(btVector3(0,0,1), 0);
@@ -109,7 +109,7 @@ void CGLUTApplication::init()
 	// testing convex hull
 	CMesh* gunmesh = new CMesh("models/gunhull.obj", "models/");
 	btConvexHullShape* meshshape = Physics->generateConvexHullShape(gunmesh);
-	CPhysicsObject* physicsobject = new CPhysicsObject(obj, meshshape, Physics->getWorld(), 3.f);*/
+	CPhysicsObject* physicsobject = new CPhysicsObject(obj, meshshape, Physics->getWorld(), 3.f);
 }
 
 void CGLUTApplication::step()
@@ -150,6 +150,7 @@ void CGLUTApplication::render()
 
 void CGLUTApplication::mouseMove(int x, int y)
 {
+	static bool warp = false;
 	static int lastX = 100;
 	static int lastY = 100;
 	int deltaX = x - lastX;
@@ -164,12 +165,17 @@ void CGLUTApplication::mouseMove(int x, int y)
 	int w = glutGet(GLUT_WINDOW_WIDTH);
 	int h = glutGet(GLUT_WINDOW_HEIGHT);
 
-	if (x < 20 || y < 20 || x > w-20 || y > h-20)
+	//if (x < 20 || y < 20 || x > w-20 || y > h-20)
+	//{
+	if (warp)
 	{
 		lastX = w/2;
 		lastY = h/2;
 		glutWarpPointer(lastX, lastY);
+		warp = false;
 	}
+	else
+		warp = true;
 
 	Camera->mouseLook((float)deltaX, (float)deltaY);
 }

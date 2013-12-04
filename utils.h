@@ -7,6 +7,8 @@
 #define RADTODEG 57.2957795130823209f
 #define DEGTORAD 0.01745329251994329f
 
+typedef unsigned int uint;
+
 template <typename T>
 T clamp(T v, T a, T b)
 {

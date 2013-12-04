@@ -1,7 +1,6 @@
 #ifndef CMESH_H_INCL
 #define CMESH_H_INCL
 
-#include "CVertex.h"
 #include <vector>
 #include <string>
 #include "tiny_obj_loader.h"
