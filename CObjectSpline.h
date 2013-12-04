@@ -8,14 +8,17 @@
 class CObjectSpline : public CObject
 {
 public:
-	CObjectSpline(CSpline* spline, const std::vector<vec3>& stencil, int numberOfDivisions, CObject* parent = 0, const vec3& pos = vec3(), const vec3& rot = vec3());
+	CObjectSpline(CSpline* spline, const std::vector<vec3>& stencil, int numberOfDivisions, float texscale = 1.f,
+		CObject* parent = 0, const vec3& pos = vec3(), const vec3& rot = vec3());
+	// stencil: x,y = position, z = x-texcoord
 
-	//void createGeometry(const std::vector<vec3>& stencil, int numberOfDivisions);
 	void render();
 
 private:
 	CSpline* Spline;
 	std::vector<vec3> Vertices;
+	std::vector<vec3> Normals;
+	std::vector<vec3> TexCoord;
 	std::vector<uint> Indices;
 	//GLuint VAO;
 };

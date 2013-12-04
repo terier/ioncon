@@ -7,6 +7,7 @@
 #include "CObjectMotionState.h"
 #include "utils.h"
 #include "physics.h"
+#include "icr_loader.h"
 
 CGLUTApplication::CGLUTApplication(const SGLUTParameters& param) :
 	DoubleBuffering(param.DoubleBuffering)
@@ -44,8 +45,10 @@ void CGLUTApplication::init()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.5f);
 
 	glutSetCursor(GLUT_CURSOR_NONE);
 	glutWarpPointer(100,100);
@@ -60,30 +63,53 @@ void CGLUTApplication::init()
 
 	Camera->setPosition(vec3(15,10,30));
 	Camera->setFocus(vec3(10,0,10));
+	Camera->setSpeed(50.f);
 
 	CMesh* m = new CMesh("models/gun.obj", "models/");
 	CObjectMesh* obj = new CObjectMesh(m);
-	obj->setPosition(vec3(10,0,10));
+	obj->setPosition(vec3(10,5,10));
 	Scene->addObjectToRoot(obj);
 
-	obj->setTexture(loadTexture("images/guntex.png"));
+	uint guntex = Scene->loadTexture("images/guntex.png");
+	obj->setTexture(guntex);
 
-	CSpline* spline = new CSpline();
-	spline->addControlPoint(SControlPoint(vec3(1,0,3),vec3(-1,0,-3),vec3(2,0,-1),vec3(2,5,-1)));
-	spline->addControlPoint(SControlPoint(vec3(4,0,1),vec3(3,0,0),vec3(2,0,0),vec3(2,5,0)));
-	spline->addControlPoint(SControlPoint(vec3(7,0,2),vec3(0,0,3),vec3(-2,0,0),vec3(-2,5,0)));
-	spline->addControlPoint(SControlPoint(vec3(6,0,5),vec3(0,0,2),vec3(3,0,0),vec3(3,5,0)));
-	spline->addControlPoint(SControlPoint(vec3(10,0,6),vec3(0,0,3),vec3(-2,0,2),vec3(-2,5,2)));
-	spline->addControlPoint(SControlPoint(vec3(7,0,9),vec3(-3,0,1),vec3(-1,0,-1),vec3(-1,5,-1)));
-	spline->addControlPoint(SControlPoint(vec3(4,0,7),vec3(0,0,-4),vec3(-2,0,1),vec3(-2,5,1)));
-	//spline->makeCatmullRom();
-	std::vector<vec3> stencil;
-	stencil.push_back(vec3(-0.2f,0.1f,0));
-	stencil.push_back(vec3(-0.1f,0,0));
-	stencil.push_back(vec3(0.1f,0,0));
-	stencil.push_back(vec3(0.2f,0.1f,0));
-	CObjectSpline* objSpline = new CObjectSpline(spline, stencil, 100);
+	CObjectSpline* objSpline = loadRoad("models/testroad.icr", Scene);
 	Scene->addObjectToRoot(objSpline);
+	uint roadtex = Scene->loadTexture("images/roadtex.png");
+	objSpline->setTexture(roadtex);
+
+	// physics demo
+	/*uint texture = Scene->loadTexture("art.png");
+	CObjectPlane* plane = new CObjectPlane(20.f, 5);
+	plane->setTexture(texture);
+	Scene->addObjectToRoot(plane);
+	btCollisionShape* planeShape = new btStaticPlaneShape(btVector3(0,1,0), 0);
+	CPhysicsObject* planeObject = new CPhysicsObject(plane, planeShape, Physics->getWorld(), 0.f);
+	planeObject->getRigidBody()->setRestitution(0.7f);
+
+	plane = new CObjectPlane(20.f, 5);
+	plane->setRotation(vec3(90.f, 0, 0));
+	plane->setPosition(vec3(0, 20.f, 0));
+	plane->setTexture(texture);
+	Scene->addObjectToRoot(plane);
+	planeShape = new btStaticPlaneShape(btVector3(0,0,1), 0);
+	planeObject = new CPhysicsObject(plane, planeShape, Physics->getWorld(), 0.f);
+	planeObject->getRigidBody()->setRestitution(0.7f);
+
+	btCollisionShape* sphereShape = new btSphereShape(1.f);
+	for (int i=0; i<50; i++)
+	{
+		CObjectSphere* sphere = new CObjectSphere(1.f);
+		Scene->addObjectToRoot(sphere);
+		sphere->setPosition(vec3((float)(rand()%20), (float)(rand()%10), (float)(rand()%20)));
+		CPhysicsObject* sphereObject = new CPhysicsObject(sphere, sphereShape, Physics->getWorld(), 1.f);
+		sphereObject->getRigidBody()->setRestitution(0.7f);
+	}
+
+	// testing convex hull
+	CMesh* gunmesh = new CMesh("models/gunhull.obj", "models/");
+	btConvexHullShape* meshshape = Physics->generateConvexHullShape(gunmesh);
+	CPhysicsObject* physicsobject = new CPhysicsObject(obj, meshshape, Physics->getWorld(), 3.f);*/
 }
 
 void CGLUTApplication::step()
@@ -93,13 +119,13 @@ void CGLUTApplication::step()
 	Scene->animate(dt);
 
 	if (KeyDown['w'])
-		Camera->moveForward();
+		Camera->moveForward(dt);
 	if (KeyDown['s'])
-		Camera->moveBackward();
+		Camera->moveBackward(dt);
 	if (KeyDown['a'])
-		Camera->moveLeft();
+		Camera->moveLeft(dt);
 	if (KeyDown['d'])
-		Camera->moveRight();
+		Camera->moveRight(dt);
 	if (KeyDown[27])
 		exit(0);
 }
@@ -193,4 +219,16 @@ void CGLUTApplication::specialFunc(int c, int x, int y)
 
 void CGLUTApplication::mouseFunc(int button, int state, int x, int y)
 {
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	{
+		//CObject* obj = new CObjectCube(1.f);
+		CObject* obj = new CObjectSphere(1.f);
+		Scene->addObjectToRoot(obj);
+		obj->setPosition(Camera->getPosition());
+		//btCollisionShape* shp = new btBoxShape(btVector3(1,1,1));
+		btCollisionShape* shp = new btSphereShape(1.f);
+		CPhysicsObject* objP = new CPhysicsObject(obj, shp, Physics->getWorld(), 1.f);
+		objP->getRigidBody()->setRestitution(0.7f);
+		objP->getRigidBody()->setLinearVelocity(createBulletVector(Camera->getFocus() * 50.f));
+	}
 }

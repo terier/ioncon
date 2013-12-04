@@ -22,6 +22,7 @@ public:
 	{
 		glPushMatrix();
 		transform();
+		glBindTexture(GL_TEXTURE_2D, getTexture());
 		glBegin(GL_QUADS);
 		glNormal3f(0,1,0);
 		float d = 1.f / Subdivide;
@@ -57,6 +58,15 @@ public:
 	CObjectSphere(float radius = 5.f, int slices = 32, int stacks = 16) :
 	  Radius(radius), Slices(slices), Stacks(stacks)
 	{
+		Sphere = gluNewQuadric();
+		gluQuadricDrawStyle(Sphere, GLU_FILL);
+		gluQuadricTexture(Sphere, GL_TRUE);
+		gluQuadricNormals(Sphere, GLU_SMOOTH);
+	}
+
+	~CObjectSphere()
+	{
+		gluDeleteQuadric(Sphere);
 	}
 
 	float getRadius() const { return Radius; }
@@ -71,12 +81,14 @@ public:
 	{
 		glPushMatrix();
 		transform();
-		glutSolidSphere(Radius, Slices, Stacks);
+		//glutSolidSphere(Radius, Slices, Stacks);
+		gluSphere(Sphere, Radius, Slices, Stacks);
 		CObject::render();
 		glPopMatrix();
 	}
 
 private:
+	GLUquadric* Sphere;
 	float Radius;
 	int Slices;
 	int Stacks;

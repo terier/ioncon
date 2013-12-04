@@ -1,9 +1,8 @@
 #ifndef COBJECT_MOTION_STATE_H_INCL
 #define COBJECT_MOTION_STATE_H_INCL
 
-#include "opengl.h"
-#include "CObject.h"
 #include <btBulletDynamicsCommon.h>
+#include "CObject.h"
 #include "utils.h"
 
 class CObjectMotionState : public btMotionState

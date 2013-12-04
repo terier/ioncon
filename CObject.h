@@ -14,7 +14,7 @@ class CObject
 {
 public:
 	CObject(CObject* parent = 0, const vec3& pos = vec3(), const vec3& rot = vec3()) :
-		Parent(0), Position(pos), Rotation(rot)
+		Parent(0), Position(pos), Rotation(rot), Texture(0)
 	{
 		setParent(Parent);
 	}
@@ -29,9 +29,12 @@ public:
 	CObject* getParent() const { return Parent; }
 	vec3 getPosition() const { return Position; }
 	vec3 getRotation() const { return Rotation; }
+	uint getTexture() const { return Texture; }
+
 	void setParent(CObject* parent);
 	void setPosition(const vec3& v) { Position = v; }
 	void setRotation(const vec3& v) { Rotation = v; }
+	void setTexture(uint tex) { Texture = tex; }
 
 	virtual void render()
 	{
@@ -57,6 +60,7 @@ public:
 private:
 	vec3 Position;
 	vec3 Rotation;
+	uint Texture;
 
 	CObject* Parent;
 	ObjectList Children;

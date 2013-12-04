@@ -2,8 +2,7 @@
 #define OPENGL_H_INCL
 
 #include <Windows.h>
-#include <gl\GL.h>
-#include <gl\GLU.h>
+#include <GL\glew.h>
 #include <gl\freeglut.h>
 
 #endif

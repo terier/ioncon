@@ -1,9 +1,8 @@
 #ifndef UTILS_H_INCL
 #define UTILS_H_INCL
 
-#include "opengl.h"
-#include "stb_image.h"
 #include "vec3.h"
+#include <btBulletDynamicsCommon.h> // btVector3
 
 #define RADTODEG 57.2957795130823209f
 #define DEGTORAD 0.01745329251994329f
@@ -17,6 +16,7 @@ T clamp(T v, T a, T b)
 void printvec(const vec3& v);
 void printfloat(float f);
 
-unsigned int loadTexture(const char* fname);
+btVector3 createBulletVector(const vec3& v);
+vec3 createIonconVector(const btVector3& v);
 
 #endif

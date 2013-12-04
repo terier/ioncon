@@ -1,11 +1,12 @@
 #include "CCameraFPS.h"
 #include "utils.h"
 
-CCameraFPS::CCameraFPS(float speed, float rotateSpeed,
+CCameraFPS::CCameraFPS(float speed, float rotateSpeed, float rotateDamping,
 	float fov, float near_, float far_,
 	const vec3& pos, const vec3& rot) :
 CCamera(vec3(), 1.f, fov, near_, far_, 0, pos, rot),
-Speed(speed), RotateSpeed(rotateSpeed), DX(0), DY(0)
+Speed(speed), RotateSpeed(rotateSpeed), RotateDamping(rotateDamping),
+DX(0), DY(0)
 {
 	recalculateProjection();
 	recalculateFocus();
@@ -23,48 +24,44 @@ void CCameraFPS::setZDir(float d)
 	recalculateFocus();
 }
 
-void CCameraFPS::moveForward()
+void CCameraFPS::moveForward(float dt)
 {
 	vec3 p = getPosition();
-	p.X += Speed * cos(Dir) * cos(ZDir);
-	p.Z += Speed * sin(Dir) * cos(ZDir);
-	p.Y += Speed * sin(ZDir);
+	p += getFocus() * (Speed * dt);
 	setPosition(p);
 	recalculateFocus();
 }
 
-void CCameraFPS::moveBackward()
+void CCameraFPS::moveBackward(float dt)
 {
 	vec3 p = getPosition();
-	p.X -= Speed * cos(Dir) * cos(ZDir);
-	p.Z -= Speed * sin(Dir) * cos(ZDir);
-	p.Y -= Speed * sin(ZDir);
+	p -= getFocus() * (Speed * dt);
 	setPosition(p);
 	recalculateFocus();
 }
 
-void CCameraFPS::moveLeft()
+void CCameraFPS::moveLeft(float dt)
 {
 	vec3 p = getPosition();
-	p.X += Speed * sin(Dir);
-	p.Z -= Speed * cos(Dir);
+	p.X += Speed * sin(Dir) * dt;
+	p.Z -= Speed * cos(Dir) * dt;
 	setPosition(p);
 	recalculateFocus();
 }
 
-void CCameraFPS::moveRight()
+void CCameraFPS::moveRight(float dt)
 {
 	vec3 p = getPosition();
-	p.X -= Speed * sin(Dir);
-	p.Z += Speed * cos(Dir);
+	p.X -= Speed * sin(Dir) * dt;
+	p.Z += Speed * cos(Dir) * dt;
 	setPosition(p);
 	recalculateFocus();
 }
 
 void CCameraFPS::mouseLook(float dx, float dy)
 {
-	DX += dx;
-	DY += dy;
+	DX += dx * RotateSpeed;
+	DY += dy * RotateSpeed;
 }
 
 void CCameraFPS::recalculateFocus()
@@ -88,14 +85,27 @@ void CCameraFPS::setFocus(const vec3& focus)
 
 void CCameraFPS::animate(float dt)
 {
-	DX *= 1.f - dt * 10.f;
-	DY *= 1.f - dt * 10.f;
+	// Euler-type ODE solver
+	//DX *= 1.f - dt * 10.f;
+	//DY *= 1.f - dt * 10.f;
 
-	Dir += RotateSpeed * DX;
+	// exact solution
+	DX *= exp(-RotateDamping * dt);
+	DY *= exp(-RotateDamping * dt);
+
+	Dir += DX;
 	if (Dir > 360.f * DEGTORAD) Dir -= 360.f * DEGTORAD;
 	if (Dir < 0.f) Dir += 360.f * DEGTORAD;
-	ZDir -= RotateSpeed * DY;
+	ZDir -= DY;
 	if (ZDir > 89.f * DEGTORAD) ZDir = 89.f * DEGTORAD;
 	if (ZDir < -89.f * DEGTORAD) ZDir = -89.f * DEGTORAD;
+
 	recalculateFocus();
+}
+
+vec3 CCameraFPS::getFocus() const
+{
+	return vec3(cos(Dir) * cos(ZDir),
+		sin(ZDir),
+		sin(Dir) * cos(ZDir));
 }

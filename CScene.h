@@ -2,6 +2,8 @@
 #define CSCENE_H_INCL
 
 #include "CObject.h"
+#include "CObjectMesh.h"
+#include "CObjectShapes.h"
 #include "CCamera.h"
 #include "opengl.h"
 
@@ -22,6 +24,12 @@ public:
 
 	void render();
 	void animate(float dt);
+
+	unsigned int loadTexture(const char* fname);
+
+	CObjectMesh* addObjectMesh(CMesh* mesh, bool physics = false);
+	CObjectSphere* addObjectSphere(float radius, bool physics = false);
+	CObjectCube* addObjectCube(float size, bool physics = false);
 
 private:
 	CObject Root;

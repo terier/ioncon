@@ -7,7 +7,7 @@ CPhysicsObject::CPhysicsObject(CObject* object, btCollisionShape* shape, btDynam
 	World = world;
 
 	btVector3 inertia;
-	shape->calculateLocalInertia(1.f, inertia);
+	shape->calculateLocalInertia(mass, inertia);
 	
 	vec3 position = Object->getPosition();
 	btVector3 pos(position.X, position.Y, position.Z);

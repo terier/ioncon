@@ -15,6 +15,15 @@ struct SControlPoint
 	{
 	}
 
+	SControlPoint& operator*(float a)
+	{
+		Pos *= a;
+		Dir *= a;
+		Cur *= a;
+		Up *= a;
+		return *this;
+	}
+
 	vec3 Pos;
 	vec3 Dir;
 	vec3 Cur;
