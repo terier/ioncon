@@ -71,7 +71,7 @@ void CGLUTApplication::init()
 	uint guntex = Scene->loadTexture("images/guntex.png");
 	obj->setTexture(guntex);
 
-	uint roadtex = Scene->loadTexture("images/roadtex.png");
+	uint roadtex = Scene->loadTexture("images/roadtex3.png");
 	CMesh* roadMesh = loadRoad("models/testroad.icr");
 	CObjectMesh* roadObject = new CObjectMesh(roadMesh);
 	roadObject->setTexture(roadtex);
@@ -118,13 +118,13 @@ void CGLUTApplication::step()
 	Physics->getWorld()->stepSimulation(dt, 10);
 	Scene->animate(dt);
 
-	if (KeyDown['w'])
+	if (KeyDown['w'] || KeyDown['W'])
 		Camera->moveForward(dt);
-	if (KeyDown['s'])
+	if (KeyDown['s'] || KeyDown['S'])
 		Camera->moveBackward(dt);
-	if (KeyDown['a'])
+	if (KeyDown['a'] || KeyDown['A'])
 		Camera->moveLeft(dt);
-	if (KeyDown['d'])
+	if (KeyDown['d'] || KeyDown['D'])
 		Camera->moveRight(dt);
 	if (KeyDown[27])
 		exit(0);
