@@ -12,6 +12,9 @@ public:
 	{
 	}
 
+	CMesh* getMesh() { return Mesh; }
+	void setMesh(CMesh* mesh) { Mesh = mesh; }
+
 	void render();
 
 private:

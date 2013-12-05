@@ -3,9 +3,8 @@
 
 /* IonCon Road (.icr) loader */
 
-#include "CObjectSpline.h"
-#include "CScene.h"
+#include "CMesh.h"
 
-CObjectSpline* loadRoad(const char* fname, CScene* scene = 0);
+CMesh* loadRoad(const char* fname);
 
 #endif

@@ -2,19 +2,24 @@
 #define CPHYSICS_OBJECT_H_INCL
 
 #include "CObject.h"
-#include "physics.h"
+#include <btBulletDynamicsCommon.h>
 
-class CPhysicsObject
+class CPhysicsObject : public btMotionState
 {
 public:
-	CPhysicsObject(CObject* object, btCollisionShape* shape, btDynamicsWorld* world, float mass);
-	~CPhysicsObject();
-	CObject* getObject();
-	btRigidBody* getRigidBody();
+	CPhysicsObject(CObject* object, btCollisionShape* shape, float mass);
+	virtual ~CPhysicsObject();
+
+	virtual void getWorldTransform(btTransform& wt) const;
+	virtual void setWorldTransform(const btTransform& wt);
+
+	CObject* getRenderObject() { return Object; }
+	btRigidBody* getPhysicsObject() { return RBody; }
+
 private:
 	CObject* Object;
 	btRigidBody* RBody;
-	btDynamicsWorld* World;
+	btTransform Transform;
 };
 
 #endif

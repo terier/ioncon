@@ -1,9 +1,9 @@
 #include "icr_loader.h"
 #include <stdio.h>
 #include <vector>
-#include "vec3.h"
+#include "CSpline.h"
 
-CObjectSpline* loadRoad(const char* fname, CScene* scene)
+CMesh* loadRoad(const char* fname)
 {
 	printf("loading %s...\n", fname);
 	FILE* f = fopen(fname, "r");
@@ -48,8 +48,7 @@ CObjectSpline* loadRoad(const char* fname, CScene* scene)
 	}
 	fclose(f);
 
-	CObjectSpline* objSpline = new CObjectSpline(spline, stencil, subdiv, texscale);
-	if (scene)
-		scene->addObjectToRoot(objSpline);
-	return objSpline;
+	CMesh* mesh = new CMesh();
+	mesh->generateFromSpline(spline, stencil, subdiv, texscale);
+	return mesh;
 }

@@ -1,30 +1,27 @@
 #include "CPhysicsObject.h"
-#include "CObjectMotionState.h"
 
-CPhysicsObject::CPhysicsObject(CObject* object, btCollisionShape* shape, btDynamicsWorld* world, float mass)
+CPhysicsObject::CPhysicsObject(CObject* object, btCollisionShape* shape, float mass) :
+Object(object)
 {
-	Object = object;
-	World = world;
-
 	btVector3 inertia;
 	shape->calculateLocalInertia(mass, inertia);
-	
-	vec3 position = Object->getPosition();
-	btVector3 pos(position.X, position.Y, position.Z);
-
-	btMotionState* ms = new CObjectMotionState(btTransform(btQuaternion(0,0,0,1), pos), Object);
-	
-	RBody = new btRigidBody(mass, ms, shape, inertia);
-
-	world->addRigidBody(RBody);
+	Transform.setFromOpenGLMatrix(Object->getTransformationPointer().M);
+	RBody = new btRigidBody(mass, this, shape, inertia);
 }
 
-CPhysicsObject::~CPhysicsObject() {
-	World->removeRigidBody(RBody);
+CPhysicsObject::~CPhysicsObject()
+{
 	delete RBody;
 	delete Object;
 }
 
-CObject* CPhysicsObject::getObject() { return Object; }
+void CPhysicsObject::getWorldTransform(btTransform& wt) const
+{
+	wt = Transform;
+}
 
-btRigidBody* CPhysicsObject::getRigidBody() { return RBody; }
+void CPhysicsObject::setWorldTransform(const btTransform& wt)
+{
+	if (Object)
+		wt.getOpenGLMatrix(Object->getTransformationPointer().M);
+}

@@ -1,4 +1,5 @@
 #include "CSpline.h"
+#include "utils.h"
 
 void CSpline::addControlPoint(const SControlPoint& p)
 {
@@ -124,23 +125,24 @@ void CSpline::getFrameBasis(float t, mat4& result) const
 	vec3 P = getPosition(t);
 	vec3 U = getUpVector(t);
 	vec3 D = getTangent(t).norm();
-	vec3 S = D.cross(U).norm();
-	U = S.cross(D).norm();
+	U -= U.projvec(D);
+	U = U.norm();
+	vec3 S = D.cross(U);
 
 	// [ --S-- | ]
 	// [ --U-- P ]
 	// [ --D-- | ]
-	// [ 0 0 0 1 ]
+	// [ 0 0 0 1 ] ne, to je narobe ...
 	result.M[0 ] = S.X;
-	result.M[1 ] = S.Y;
-	result.M[2 ] = S.Z;
+	result.M[1 ] = U.X;
+	result.M[2 ] = D.X;
 	result.M[3 ] = P.X;
-	result.M[4 ] = U.X;
+	result.M[4 ] = S.Y;
 	result.M[5 ] = U.Y;
-	result.M[6 ] = U.Z;
+	result.M[6 ] = D.Y;
 	result.M[7 ] = P.Y;
-	result.M[8 ] = D.X;
-	result.M[9 ] = D.Y;
+	result.M[8 ] = S.Z;
+	result.M[9 ] = U.Z;
 	result.M[10] = D.Z;
 	result.M[11] = P.Z;
 	result.M[12] = 0;
@@ -152,10 +154,7 @@ void CSpline::getFrameBasis(float t, mat4& result) const
 void CSpline::makeCardinal(float c)
 {
 	for (size_t i=0; i<Points.size(); i++)
-	{
 		Points[i].Dir = (Points[index(i+1)].Pos - Points[index(i-1)].Pos) * (1 - c);
-		//Points[i].Cur = vec3(); // wrong?
-	}
 }
 
 void CSpline::makeCatmullRom()

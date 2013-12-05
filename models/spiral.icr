@@ -1,0 +1,21 @@
+scale 20
+subdiv 300
+texscale 0.01
+
+stencil -2.1  1        0
+stencil -2.1  0.3      0.22f
+stencil -2    0.3      0.24f
+stencil -2    0        0.3f
+stencil 2     0        0.7f
+stencil 2     0.3      0.76f
+stencil 2.1   0.3      0.78f
+stencil 2.1   1        1
+
+control   0 0 0     1 0 0     0 0 0     0 5 0
+control   0 0 0     1 0 0     0 0 0     0 5 0
+control   1 0 0     1 0 0     0 0 0     0 0 5
+control   2 0 0     1 0 0     0 0 0     0 -5 0
+control   3 0 0     1 0 0     0 0 0     0 0 -5
+control   4 0 0     1 0 0     0 0 0     0 5 0
+control   4 0 0     1 0 0     0 0 0     0 5 0
+control   1 0 5     -1 0 0    0 0 0     0 0 5

@@ -1,10 +1,8 @@
 #include "CGLUTApplication.h"
 #include <stdio.h>
 
-#include "CObjectSpline.h"
 #include "CObjectMesh.h"
 #include "CObjectShapes.h"
-#include "CObjectMotionState.h"
 #include "utils.h"
 #include "physics.h"
 #include "icr_loader.h"
@@ -45,7 +43,7 @@ void CGLUTApplication::init()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_TEXTURE_2D);
-	//glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.5f);
@@ -73,13 +71,15 @@ void CGLUTApplication::init()
 	uint guntex = Scene->loadTexture("images/guntex.png");
 	obj->setTexture(guntex);
 
-	CObjectSpline* objSpline = loadRoad("models/testroad.icr", Scene);
-	Scene->addObjectToRoot(objSpline);
 	uint roadtex = Scene->loadTexture("images/roadtex.png");
-	objSpline->setTexture(roadtex);
+	CMesh* roadMesh = loadRoad("models/testroad.icr");
+	CObjectMesh* roadObject = new CObjectMesh(roadMesh);
+	roadObject->setTexture(roadtex);
+	Scene->addObjectToRoot(roadObject);
+	Physics->addStaticMeshObject(roadObject);
 
 	// physics demo
-	uint texture = Scene->loadTexture("images/art.png");
+	/*uint texture = Scene->loadTexture("images/art.png");
 	CObjectPlane* plane = new CObjectPlane(20.f, 5);
 	plane->setTexture(texture);
 	Scene->addObjectToRoot(plane);
@@ -109,7 +109,7 @@ void CGLUTApplication::init()
 	// testing convex hull
 	CMesh* gunmesh = new CMesh("models/gunhull.obj", "models/");
 	btConvexHullShape* meshshape = Physics->generateConvexHullShape(gunmesh);
-	CPhysicsObject* physicsobject = new CPhysicsObject(obj, meshshape, Physics->getWorld(), 3.f);
+	CPhysicsObject* physicsobject = new CPhysicsObject(obj, meshshape, Physics->getWorld(), 3.f);*/
 }
 
 void CGLUTApplication::step()
@@ -225,16 +225,21 @@ void CGLUTApplication::specialFunc(int c, int x, int y)
 
 void CGLUTApplication::mouseFunc(int button, int state, int x, int y)
 {
+	static uint tex = 0;
+	if (tex == 0)
+		tex = Scene->loadTexture("images/art.png");
+
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
 		//CObject* obj = new CObjectCube(1.f);
 		CObject* obj = new CObjectSphere(1.f);
 		Scene->addObjectToRoot(obj);
 		obj->setPosition(Camera->getPosition());
+		obj->setTexture(tex);
 		//btCollisionShape* shp = new btBoxShape(btVector3(1,1,1));
 		btCollisionShape* shp = new btSphereShape(1.f);
-		CPhysicsObject* objP = new CPhysicsObject(obj, shp, Physics->getWorld(), 1.f);
-		objP->getRigidBody()->setRestitution(0.7f);
-		objP->getRigidBody()->setLinearVelocity(createBulletVector(Camera->getFocus() * 50.f));
+		CPhysicsObject* objP = Physics->addDynamicObject(obj, shp, 1.f);
+		objP->getPhysicsObject()->setRestitution(0.7f);
+		objP->getPhysicsObject()->setLinearVelocity(createBulletVector(Camera->getFocus() * 50.f));
 	}
 }

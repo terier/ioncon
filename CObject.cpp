@@ -43,16 +43,6 @@ void CObject::transform()
 
 void CObject::updateTransformation()
 {
-	/*mat4 T;
 	Transformation.setIdentity();
-	T.setRotate(Rotation);
-	Transformation *= T;
-	T.setTranslate(Position);
-	Transformation *= T;
-	Transformation.transpose();*/
-	Transformation.setIdentity();
-	//(Transformation.setRotate(Rotation) *= mat4().setTranslate(Position)).transpose();
 	(Transformation.setTranslate(Position) *= mat4().setRotate(Rotation)).transpose();
-	//Transformation.setTranslate(Position).transpose() *= mat4().setRotate(Rotation).transpose();
-	//Transformation.setRotate(Rotation).transpose() *= mat4().setTranslate(Position).transpose();
 }

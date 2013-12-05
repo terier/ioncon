@@ -2,7 +2,6 @@
 #define PHYSICS_H_INCL
 
 #include <btBulletDynamicsCommon.h>
-#include "CObjectMotionState.h"
 #include "CPhysicsWorld.h"
 #include "CPhysicsObject.h"
 

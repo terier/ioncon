@@ -1,8 +1,9 @@
 #ifndef CPHYSICS_WORLD_H_INCL
 #define CPHYSICS_WORLD_H_INCL
 
-#include "physics.h"
 #include "CMesh.h"
+#include "CObjectMesh.h"
+#include "CPhysicsObject.h"
 
 class CPhysicsWorld
 {
@@ -12,7 +13,12 @@ public:
 
 	btDiscreteDynamicsWorld* getWorld() { return World; }
 
-	btConvexHullShape* generateConvexHullShape(CMesh* mesh);
+	CPhysicsObject* addDynamicObject(CObject* object, btCollisionShape* shape, float mass);
+	CPhysicsObject* addConvexHullObject(CObjectMesh* object, float mass);
+	CPhysicsObject* addStaticMeshObject(CObjectMesh* object);
+
+	btConvexHullShape* generateConvexHullShape(const CMesh* mesh);
+	btBvhTriangleMeshShape* generateStaticMeshShape(const CMesh* mesh);
 
 private:
 	btBroadphaseInterface* Broadphase;
