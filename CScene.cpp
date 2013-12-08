@@ -3,7 +3,7 @@
 #include "stb_image.h"
 
 CScene::CScene() :
-	ActiveCam(0)
+	ActiveCam(0), SkyDome(0)
 {
 }
 
@@ -18,10 +18,17 @@ void CScene::render()
 	glLoadIdentity();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.75f,0.92f,1,1);
+	glClearColor(ClearColor.X, ClearColor.Y, ClearColor.Z, 1);
 
 	if (ActiveCam)
+	{
 		ActiveCam->render();
+		if (SkyDome)
+		{
+			SkyDome->setPosition(ActiveCam->getPosition());
+			SkyDome->render();
+		}
+	}
 
 	// TODO this is wrong ....
 	/*vec3 p = ActiveCam->getPosition();

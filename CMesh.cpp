@@ -9,6 +9,7 @@ CMesh::CMesh()
 CMesh::CMesh(const CMesh& other)
 {
 	Shapes = other.Shapes;
+	generateVBO();
 }
 
 CMesh::CMesh(const char* fname, const char* base)
@@ -18,19 +19,14 @@ CMesh::CMesh(const char* fname, const char* base)
 		std::cout << err << "\n";
 	else
 		printf("Loaded %s\n", fname);
+	generateVBO();
 }
 
-void CMesh::pushVector(FloatVector& where, const vec3& v)
-{
-	where.push_back(v.X);
-	where.push_back(v.Y);
-	where.push_back(v.Z);
-}
-
-void CMesh::generateFromSpline(CSpline* spline,
-		const PointVector& stencil,
-		int numberOfDivisions,
-		float texscale)
+CMesh::CMesh(CSpline* spline,
+	const PointVector& stencil,
+	int numberOfDivisions,
+	float texscale,
+	const vec3& stencilscale)
 {
 	shape_t shape;
 	UintVector& Indices = shape.mesh.indices;
@@ -44,6 +40,12 @@ void CMesh::generateFromSpline(CSpline* spline,
 	float dt = end / numberOfDivisions;
 
 	uint w = (uint) stencil.size();
+	PointVector Stencil(stencil);
+	for (uint i=0; i<Stencil.size(); i++)
+	{
+		Stencil[i].X *= stencilscale.X;
+		Stencil[i].Y *= stencilscale.Y;
+	}
 
 	mat4 basis(MT_NULL);
 	int idx = 0;
@@ -53,15 +55,15 @@ void CMesh::generateFromSpline(CSpline* spline,
 		spline->getFrameBasis(t, basis);
 		for (uint i=0; i<w; i++)
 		{
-			pushVector(Vertices, basis * vec3(stencil[i].X, stencil[i].Y, 0));
-			TexCoord.push_back(stencil[i].Z);
+			pushVector(Vertices, basis * vec3(Stencil[i].X, Stencil[i].Y, 0));
+			TexCoord.push_back(Stencil[i].Z);
 			TexCoord.push_back(texcoord * texscale);
 			if (i == 0) // starting stencil point
-				pushVector(Normals, basis.mulnorm((stencil[i+1] - stencil[i]).cross(vec3(0,0,-1)).norm()));
+				pushVector(Normals, basis.mulnorm((Stencil[i+1] - Stencil[i]).cross(vec3(0,0,-1)).norm()));
 			else if (i == w-1) // ending stencil point
-				pushVector(Normals, basis.mulnorm((stencil[i] - stencil[i-1]).cross(vec3(0,0,-1)).norm()));
+				pushVector(Normals, basis.mulnorm((Stencil[i] - Stencil[i-1]).cross(vec3(0,0,-1)).norm()));
 			else // middle stencil point
-				pushVector(Normals, basis.mulnorm((stencil[i+1] - stencil[i-1]).cross(vec3(0,0,-1)).norm()));
+				pushVector(Normals, basis.mulnorm((Stencil[i+1] - Stencil[i-1]).cross(vec3(0,0,-1)).norm()));
 		}
 
 		if (!firstIteration) // first iter create only verts, tris in later iters
@@ -83,4 +85,38 @@ void CMesh::generateFromSpline(CSpline* spline,
 	}
 
 	Shapes.push_back(shape);
+	generateVBO();
+}
+
+void CMesh::generateVBO()
+{
+	for (size_t i=0; i<Shapes.size(); i++)
+	{
+		vbo_t vbo;
+		glGenBuffers(4, vbo.buffer);
+
+		const mesh_t& m = Shapes[i].mesh;
+
+		glBindBuffer(GL_ARRAY_BUFFER, vbo.buffer[VBO_VERTEX_BUFFER]);
+		glBufferData(GL_ARRAY_BUFFER, m.positions.size() * sizeof(float), m.positions.data(), GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, vbo.buffer[VBO_NORMAL_BUFFER]);
+		glBufferData(GL_ARRAY_BUFFER, m.normals.size() * sizeof(float), m.normals.data(), GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, vbo.buffer[VBO_TEXCOORD_BUFFER]);
+		glBufferData(GL_ARRAY_BUFFER, m.texcoords.size() * sizeof(float), m.texcoords.data(), GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo.buffer[VBO_INDEX_BUFFER]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m.indices.size() * sizeof(uint), m.indices.data(), GL_STATIC_DRAW);
+
+		VBOs.push_back(vbo);
+	}
+	//Shapes.clear(); // free main memory
+}
+
+void CMesh::pushVector(FloatVector& where, const vec3& v)
+{
+	where.push_back(v.X);
+	where.push_back(v.Y);
+	where.push_back(v.Z);
 }

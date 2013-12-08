@@ -7,24 +7,30 @@ void CObjectMesh::render()
 
 	if (Mesh)
 	{
-		const ShapeVector& shapes = Mesh->getShapes();
-		for (ShapeVector::const_iterator shape = shapes.begin(); shape != shapes.end(); shape++)
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_NORMAL_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glBindTexture(GL_TEXTURE_2D, getTexture());
+		const VBOVector& vbos = Mesh->getVBOs();
+		for (size_t i=0; i<vbos.size(); i++)
 		{
-			const mesh_t& m = shape->mesh;
-			const FloatVector& pos = m.positions;
-			const FloatVector& nor = m.normals;
-			const FloatVector& tex = m.texcoords;
-			const UintVector& ind = m.indices;
-			glBindTexture(GL_TEXTURE_2D, getTexture());
-			glBegin(GL_TRIANGLES);
-			for (size_t i=0; i<ind.size(); i++)
-			{
-				glTexCoord2f(tex[2*ind[i]], tex[2*ind[i]+1]);
-				glNormal3f(nor[3*ind[i]], nor[3*ind[i]+1], nor[3*ind[i]+2]);
-				glVertex3f(pos[3*ind[i]], pos[3*ind[i]+1], pos[3*ind[i]+2]);
-			}
-			glEnd();
+			glBindBuffer(GL_ARRAY_BUFFER, vbos[i].buffer[VBO_VERTEX_BUFFER]);
+			glVertexPointer(3, GL_FLOAT, 0, 0);
+
+			glBindBuffer(GL_ARRAY_BUFFER, vbos[i].buffer[VBO_TEXCOORD_BUFFER]);
+			glTexCoordPointer(2, GL_FLOAT, 0, 0);
+
+			glBindBuffer(GL_ARRAY_BUFFER, vbos[i].buffer[VBO_NORMAL_BUFFER]);
+			glNormalPointer(GL_FLOAT, 0, 0);
+
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[i].buffer[VBO_INDEX_BUFFER]);
+			glIndexPointer(GL_UNSIGNED_INT, 0, 0);
+
+			glDrawElements(GL_TRIANGLES, Mesh->getShapes()[i].mesh.indices.size(), GL_UNSIGNED_INT, 0);
 		}
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState(GL_NORMAL_ARRAY);
+		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 
 	CObject::render(); // render children

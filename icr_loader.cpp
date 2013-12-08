@@ -15,6 +15,7 @@ CMesh* loadRoad(const char* fname)
 
 	CSpline* spline = new CSpline();
 	std::vector<vec3> stencil;
+	vec3 stencilscale;
 	vec3 b1, b2, b3, b4; // buffers
 	float scale = 1.f;
 	float texscale = 0.01f;
@@ -32,12 +33,14 @@ CMesh* loadRoad(const char* fname)
 			fscanf(f, "%f %f %f", &b3.X, &b3.Y, &b3.Z);
 			fscanf(f, "%f %f %f", &b4.X, &b4.Y, &b4.Z);
 			spline->addControlPoint(SControlPoint(b1, b2, b3, b4) * scale);
-		} else if (!strcmp(type, "scale")) {
+		} else if (!strcmp(type, "scalespline")) {
 			fscanf(f, "%f", &scale);
+		} else if (!strcmp(type, "scaletexture")) {
+			fscanf(f, "%f", &texscale);
+		} else if (!strcmp(type, "scalestencil")) {
+			fscanf(f, "%f %f", &stencilscale.X, &stencilscale.Y);
 		} else if (!strcmp(type, "subdiv")) {
 			fscanf(f, "%d", &subdiv);
-		} else if (!strcmp(type, "texscale")) {
-			fscanf(f, "%f", &texscale);
 		} else if (!strcmp(type, "#")) {
 			while (fgetc(f) != '\n')
 			{ // deliberately empty
@@ -48,7 +51,5 @@ CMesh* loadRoad(const char* fname)
 	}
 	fclose(f);
 
-	CMesh* mesh = new CMesh();
-	mesh->generateFromSpline(spline, stencil, subdiv, texscale);
-	return mesh;
+	return new CMesh(spline, stencil, subdiv, texscale, stencilscale);
 }

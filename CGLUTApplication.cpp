@@ -3,9 +3,11 @@
 
 #include "CObjectMesh.h"
 #include "CObjectShapes.h"
+#include "CObjectSkyDome.h"
 #include "utils.h"
 #include "physics.h"
 #include "icr_loader.h"
+#include "glsl.h"
 
 CGLUTApplication::CGLUTApplication(const SGLUTParameters& param) :
 	DoubleBuffering(param.DoubleBuffering)
@@ -20,6 +22,9 @@ CGLUTApplication::CGLUTApplication(const SGLUTParameters& param) :
 	int argc = 1;
 	char* argv = "glutprogram";
 	glutInit(&argc, &argv);
+	glutInitContextVersion(2, 0);
+	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
+	glutInitContextProfile(GLUT_CORE_PROFILE);
 	glutInitDisplayMode(mode);
 	glutInitWindowPosition(param.WindowX, param.WindowY);
 	glutInitWindowSize(param.WindowW, param.WindowH);
@@ -28,6 +33,7 @@ CGLUTApplication::CGLUTApplication(const SGLUTParameters& param) :
 	else
 		glutCreateWindow("");
 
+	glewInit();
 	init();
 }
 
@@ -45,6 +51,7 @@ void CGLUTApplication::init()
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.5f);
 
@@ -58,19 +65,25 @@ void CGLUTApplication::init()
 	Physics = new CPhysicsWorld();
 	Camera = new CCameraFPS();
 	Scene->setActiveCamera(Camera);
+	Scene->setClearColor(vec3(0.10f, 0.11f, 0.15f));
 
 	Camera->setPosition(vec3(15,10,30));
 	Camera->setSpeed(50.f);
 
-	CMesh* m = new CMesh("models/gun.obj", "models/");
-	CObjectMesh* obj = new CObjectMesh(m);
-	obj->setPosition(vec3(10,5,10));
-	obj->setRotation(vec3(10,10,10));
-	Scene->addObjectToRoot(obj);
+	// sky box test
+	uint skytex = Scene->loadTexture("images/sky2.jpg");
+	CObjectSkyDome* sky = new CObjectSkyDome(skytex);
+	Scene->setSkyDome(sky);
 
-	uint guntex = Scene->loadTexture("images/guntex.png");
-	obj->setTexture(guntex);
+	// car
+	CMesh* carMesh = new CMesh("models/corvette.obj", "models/");
+	CMesh* carHull = new CMesh("models/corvette_hull.obj", "models/");
+	btCollisionShape* carShape = Physics->generateConvexHullShape(carHull);
+	CObjectMesh* carObject = Scene->addObjectMesh(carMesh);
+	carObject->setPosition(vec3(35,0,100));
+	Physics->addDynamicObject(carObject, carShape, 2.f);
 
+	// road
 	uint roadtex = Scene->loadTexture("images/roadtex3.png");
 	CMesh* roadMesh = loadRoad("models/testroad.icr");
 	CObjectMesh* roadObject = new CObjectMesh(roadMesh);
@@ -128,6 +141,9 @@ void CGLUTApplication::step()
 		Camera->moveRight(dt);
 	if (KeyDown[27])
 		exit(0);
+
+	if (KeyDown['p'])
+		glutFullScreenToggle();
 }
 
 float CGLUTApplication::getTimeStep()
@@ -227,7 +243,7 @@ void CGLUTApplication::mouseFunc(int button, int state, int x, int y)
 {
 	static uint tex = 0;
 	if (tex == 0)
-		tex = Scene->loadTexture("images/art.png");
+		tex = Scene->loadTexture("images/steelplate.jpg");
 
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{

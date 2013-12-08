@@ -4,6 +4,7 @@
 #include "CObject.h"
 #include "CObjectMesh.h"
 #include "CObjectShapes.h"
+#include "CObjectSkyDome.h"
 #include "CCamera.h"
 #include "opengl.h"
 
@@ -18,9 +19,13 @@ public:
 
 	CCamera* getActiveCamera() const { return ActiveCam; }
 	vec3 getAmbient() const { return Ambient; }
+	vec3 getClearColor() const { return ClearColor; }
+	CObjectSkyDome* getSkyDome() const { return SkyDome; }
 
 	void setActiveCamera(CCamera* cam) { ActiveCam = cam; }
 	void setAmbient(const vec3& amb) { Ambient = amb; }
+	void setClearColor(const vec3& col) { ClearColor = col; }
+	void setSkyDome(CObjectSkyDome* sky) { SkyDome = sky; }
 
 	void render();
 	void animate(float dt);
@@ -33,8 +38,10 @@ public:
 
 private:
 	CObject Root;
+	CObjectSkyDome* SkyDome;
 	CCamera* ActiveCam;
 	vec3 Ambient;
+	vec3 ClearColor;
 };
 
 #endif
