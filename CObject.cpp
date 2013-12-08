@@ -1,7 +1,7 @@
 #include "CObject.h"
 
 CObject::CObject(CObject* parent, const vec3& pos, const vec3& rot) :
-Parent(0), Position(pos), Rotation(rot), Texture(0)
+Parent(0), Position(pos), Rotation(rot)
 {
 	setParent(Parent);
 	updateTransformation();

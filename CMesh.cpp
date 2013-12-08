@@ -29,6 +29,15 @@ CMesh::CMesh(CSpline* spline,
 	const vec3& stencilscale)
 {
 	shape_t shape;
+	shape.name = "Road Object";
+
+	material_t& mat = shape.material;
+	mat.emission[0] = mat.emission[1] = mat.emission[2] = 0;
+	mat.ambient[0] = mat.ambient[1] = mat.ambient[2] = 0.3f;
+	mat.diffuse[0] = mat.diffuse[1] = mat.diffuse[2] = 1;
+	mat.specular[0] = mat.specular[1] = mat.specular[2] = 1;
+	mat.shininess = 100;
+
 	UintVector& Indices = shape.mesh.indices;
 	FloatVector& Vertices = shape.mesh.positions;
 	FloatVector& Normals = shape.mesh.normals;

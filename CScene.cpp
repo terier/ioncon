@@ -30,13 +30,8 @@ void CScene::render()
 		}
 	}
 
-	// TODO this is wrong ....
-	/*vec3 p = ActiveCam->getPosition();
-	float pos[3];
-	pos[0] = p.X;
-	pos[1] = p.Y;
-	pos[2] = p.Z;
-	glLightfv(GL_LIGHT0, GL_POSITION, pos);*/
+	float pos[4] = {500, 1000, 500, 1};
+	glLightfv(GL_LIGHT0, GL_POSITION, pos);
 
 	Root.render();
 }
@@ -48,7 +43,7 @@ void CScene::animate(float dt)
 		ActiveCam->animate(dt);
 }
 
-uint CScene::loadTexture(const char* fname)
+uint CScene::loadTexture(const char* fname, bool mipmaps)
 {
 	int w, h, n;
 	unsigned char* data = stbi_load(fname, &w, &h, &n, 4);
@@ -62,12 +57,17 @@ uint CScene::loadTexture(const char* fname)
 		uint img;
 		glGenTextures(1, &img);
 		glBindTexture(GL_TEXTURE_2D, img);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		if (mipmaps)
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		else
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		if (mipmaps)
+			glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(data);
 		return img;
 	}

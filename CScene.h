@@ -30,7 +30,7 @@ public:
 	void render();
 	void animate(float dt);
 
-	unsigned int loadTexture(const char* fname);
+	unsigned int loadTexture(const char* fname, bool mipmaps = false);
 
 	CObjectMesh* addObjectMesh(CMesh* mesh, bool physics = false);
 	CObjectSphere* addObjectSphere(float radius, bool physics = false);

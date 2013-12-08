@@ -2,6 +2,7 @@
 #define OBJECT_H_INCL
 
 #include <list>
+#include <vector>
 #include "utils.h"
 #include "mat4.h"
 #include "opengl.h"
@@ -20,12 +21,13 @@ public:
 	CObject* getParent() const { return Parent; }
 	vec3 getPosition() const { return Position; }
 	vec3 getRotation() const { return Rotation; }
-	uint getTexture() const { return Texture; }
+	uint getTexture(uint i) const { return Textures[i]; }
+	const uint* getTextures() const { return Textures; }
 
 	void setParent(CObject* parent);
 	void setPosition(const vec3& v) { Position = v; updateTransformation(); }
 	void setRotation(const vec3& v) { Rotation = v; updateTransformation(); }
-	void setTexture(uint tex) { Texture = tex; }
+	void setTexture(uint i, uint tex) { Textures[i] = tex; }
 
 	virtual void render();
 	virtual void animate(float dt);
@@ -38,7 +40,7 @@ private:
 	vec3 Position;
 	vec3 Rotation;
 	mat4 Transformation;
-	uint Texture;
+	uint Textures[10];
 
 	CObject* Parent;
 	ObjectList Children;

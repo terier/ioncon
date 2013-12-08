@@ -22,7 +22,8 @@ public:
 	{
 		glPushMatrix();
 		transform();
-		glBindTexture(GL_TEXTURE_2D, getTexture());
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, getTexture(0));
 		glBegin(GL_QUADS);
 		glNormal3f(0,1,0);
 		float d = 1.f / Subdivide;
@@ -81,7 +82,8 @@ public:
 	{
 		glPushMatrix();
 		transform();
-		glBindTexture(GL_TEXTURE_2D, getTexture());
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, getTexture(0));
 		//glutSolidSphere(Radius, Slices, Stacks);
 		gluSphere(Sphere, Radius, Slices, Stacks);
 		CObject::render();

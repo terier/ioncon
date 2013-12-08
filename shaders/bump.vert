@@ -3,7 +3,7 @@
 
 varying vec3 lightVec[MAX_LIGHTS]; 
 varying vec3 viewVec;
-attribute vec4 glTangent4f;
+//attribute vec4 glTangent4f;
 
 void main(void)
 {
@@ -11,7 +11,7 @@ void main(void)
   gl_TexCoord[0] = gl_MultiTexCoord0;
   
   vec3 n = normalize(gl_NormalMatrix * gl_Normal);
-  vec3 t = normalize(gl_NormalMatrix * glTangent4f.xyz);
+  vec3 t = normalize(gl_NormalMatrix * vec3(0,1,0));
   vec3 b = cross(n, t);
   
   vec3 v;

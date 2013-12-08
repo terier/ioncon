@@ -8,7 +8,7 @@ CloudTexture(cloudTex)
 	gluQuadricTexture(Sphere, GL_TRUE);
 	gluQuadricNormals(Sphere, GLU_SMOOTH);
 
-	setTexture(diffuseTex);
+	setTexture(0, diffuseTex);
 	setRotation(vec3(90.f * DEGTORAD, 0, 0));
 }
 
@@ -34,7 +34,7 @@ void CObjectSkyDome::render()
 
 	glPushMatrix();
 	transform();
-	glBindTexture(GL_TEXTURE_2D, getTexture());
+	glBindTexture(GL_TEXTURE_2D, getTexture(0));
 	gluSphere(Sphere, 100, 32, 16);
 	CObject::render();
 	glPopMatrix();

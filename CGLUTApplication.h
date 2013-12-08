@@ -3,6 +3,7 @@
 
 #include "opengl.h"
 #include "physics.h"
+#include "glsl.h"
 #include "CEventReceiver.h"
 #include "CScene.h"
 #include "CCameraFPS.h"
@@ -50,6 +51,7 @@ private:
 
 	CScene* Scene;
 	CPhysicsWorld* Physics;
+	cwc::glShaderManager* ShaderManager;
 	CCameraFPS* Camera;
 	btClock Clock;
 
