@@ -7,7 +7,7 @@ class CCamera : public CObject
 {
 public:
 	CCamera(const vec3& focus, float ratio, float fov,
-		float near_ = 0.5f, float far_ = 500.f,
+		float near_ = 0.5f, float far_ = 5000.f,
 		CObject* parent = 0, const vec3& pos = vec3(), const vec3& rot = vec3()) :
 		CObject(parent, pos, rot), Focus(focus), Ratio(ratio), FOV(fov),
 		Near(near_), Far(far_), WindowDirty(true)

@@ -7,7 +7,7 @@ class CCameraFPS : public CCamera
 {
 public:
 	CCameraFPS(float speed = 10.f, float rotateSpeed = 0.0001f, float rotateDamping = 10.f,
-		float fov = 60.f, float near_ = 0.5f, float far_ = 500.f,
+		float fov = 60.f, float near_ = 0.5f, float far_ = 5000.f,
 		const vec3& pos = vec3(), const vec3& rot = vec3());
 
 	float getDir() const { return Dir; }

@@ -8,6 +8,7 @@
 #include "physics.h"
 #include "icr_loader.h"
 #include "glsl.h"
+#include "blockGenerator.h"
 
 CGLUTApplication::CGLUTApplication(const SGLUTParameters& param) :
 	DoubleBuffering(param.DoubleBuffering)
@@ -75,13 +76,61 @@ void CGLUTApplication::init()
 	CObjectSkyDome* sky = new CObjectSkyDome(skytex);
 	Scene->setSkyDome(sky);
 
-	// car
-	CMesh* carMesh = new CMesh("models/corvette.obj", "models/");
-	CMesh* carHull = new CMesh("models/corvette_hull.obj", "models/");
+	// car0 - Chevrolet Corvette
+	CMesh* carMesh = new CMesh("models/cars/corvette.obj", "models/cars/");
+	CMesh* carHull = new CMesh("models/cars/corvette_hull.obj", "models/cars/");
 	btCollisionShape* carShape = Physics->generateConvexHullShape(carHull);
 	CObjectMesh* carObject = Scene->addObjectMesh(carMesh);
-	carObject->setPosition(vec3(35,0,100));
+	carObject->setPosition(vec3(45,0,85));
 	Physics->addDynamicObject(carObject, carShape, 2.f);
+
+	// car1 - Porsche Carrera 911
+	CMesh* carMesh1 = new CMesh("models/cars/911.obj", "models/cars/");
+	CMesh* carHull1 = new CMesh("models/cars/911_hull.obj", "models/cars/");
+	btCollisionShape* carShape1 = Physics->generateConvexHullShape(carHull1);
+	CObjectMesh* carObject1 = Scene->addObjectMesh(carMesh1);
+	carObject1->setPosition(vec3(35,0,100));
+	Physics->addDynamicObject(carObject1, carShape1, 2.f);
+
+	// car2 - Ford Mustang GT500
+	CMesh* carMesh2 = new CMesh("models/cars/mustang.obj", "models/cars/");
+	CMesh* carHull2 = new CMesh("models/cars/mustang_hull.obj", "models/cars/");
+	btCollisionShape* carShape2 = Physics->generateConvexHullShape(carHull2);
+	CObjectMesh* carObject2 = Scene->addObjectMesh(carMesh2);
+	carObject2->setPosition(vec3(38,0,130));
+	Physics->addDynamicObject(carObject2, carShape2, 2.f);
+
+	// car3 - Porsche Carrera GT
+	CMesh* carMesh3 = new CMesh("models/cars/carreraGT.obj", "models/cars/");
+	CMesh* carHull3 = new CMesh("models/cars/carreraGT_hull.obj", "models/cars/");
+	btCollisionShape* carShape3 = Physics->generateConvexHullShape(carHull3);
+	CObjectMesh* carObject3 = Scene->addObjectMesh(carMesh3);
+	carObject3->setPosition(vec3(45,0,100));
+	Physics->addDynamicObject(carObject3, carShape3, 2.f);
+
+	// car4 - Ferrari California
+	CMesh* carMesh4 = new CMesh("models/cars/california.obj", "models/cars/");
+	CMesh* carHull4 = new CMesh("models/cars/california_hull.obj", "models/cars/");
+	btCollisionShape* carShape4 = Physics->generateConvexHullShape(carHull4);
+	CObjectMesh* carObject4 = Scene->addObjectMesh(carMesh4);
+	carObject4->setPosition(vec3(45,0,120));
+	Physics->addDynamicObject(carObject4, carShape4, 2.f);
+
+	// car5 - Mercedes SLS AMG
+	CMesh* carMesh5 = new CMesh("models/cars/sls_amg.obj", "models/cars/");
+	CMesh* carHull5 = new CMesh("models/cars/sls_amg_hull.obj", "models/cars/");
+	btCollisionShape* carShape5 = Physics->generateConvexHullShape(carHull5);
+	CObjectMesh* carObject5 = Scene->addObjectMesh(carMesh5);
+	carObject5->setPosition(vec3(55,0,150));
+	Physics->addDynamicObject(carObject5, carShape5, 2.f);
+
+	// car6 - Mercedes SL 500
+	CMesh* carMesh6= new CMesh("models/cars/SL500.obj", "models/cars/");
+	CMesh* carHull6 = new CMesh("models/cars/SL500_hull.obj", "models/cars/");
+	btCollisionShape* carShape6 = Physics->generateConvexHullShape(carHull6);
+	CObjectMesh* carObject6 = Scene->addObjectMesh(carMesh6);
+	carObject6->setPosition(vec3(65,0,160));
+	Physics->addDynamicObject(carObject6, carShape6, 2.f);
 
 	// road
 	uint roadtex = Scene->loadTexture("images/roadtex3.png");
@@ -90,6 +139,55 @@ void CGLUTApplication::init()
 	roadObject->setTexture(roadtex);
 	Scene->addObjectToRoot(roadObject);
 	Physics->addStaticMeshObject(roadObject);
+
+	//block bigHouse
+	CMesh* houseMesh = new CMesh("models/architecture/bigHouse.obj", "models/architecture/");
+	CObjectMesh* houseObject = Scene->addObjectMesh(houseMesh);
+	houseObject->setPosition(vec3(300,0,180));
+
+	//block hotelBlock
+	CMesh* blockMesh = new CMesh("models/architecture/hotelBlock.obj", "models/architecture/");
+	CObjectMesh* blockObject = Scene->addObjectMesh(blockMesh);
+	blockObject->setPosition(vec3(270,0,-20));
+
+	//block newYork
+	CMesh* newYorkMesh = new CMesh("models/architecture/newYorkStyle.obj", "models/architecture/");
+	btCollisionShape* newYorkShape = Physics->generateConvexHullShape(newYorkMesh);
+	CObjectMesh* newYorkObject = Scene->addObjectMesh(newYorkMesh);
+	newYorkObject->setPosition(vec3(160,50,130));
+	Physics->addStaticMeshObject(newYorkObject);
+
+	//block businessBlok
+	CMesh* businessMesh = new CMesh("models/architecture/businessBlock.obj", "models/architecture/");
+	CObjectMesh* businessObject = Scene->addObjectMesh(businessMesh);
+	businessObject->setPosition(vec3(450,20,450));
+	businessObject->setRotation(vec3(0,-120,0));
+
+	//block businessBlok2
+	CObjectMesh* businessObject2 = Scene->addObjectMesh(businessMesh);
+	businessObject2->setPosition(vec3(50,-10,300));
+	businessObject2->setRotation(vec3(0,60,0));
+
+	//city
+	CMesh* cityMesh = new CMesh("models/architecture/downtown_scenery.obj", "models/architecture/");
+	CObjectMesh* cityObject = Scene->addObjectMesh(cityMesh);
+	cityObject->setPosition(vec3(0,-50,1600));
+
+	//test generate block
+	blockGenerator* gener = new blockGenerator("models/blockGenerator/blockStart2.obj",
+												"models/blockGenerator/blockItem2.obj",
+												"models/blockGenerator/blockEnd2.obj",
+												"models/blockGenerator/");
+	std::vector<CObjectMesh*> geneBlockObjVect = gener->generateBlock(5,9,5,vec3(-30,-20,-30));
+	for(size_t i=0; i<geneBlockObjVect.size(); i++)
+	{
+		Scene->addObjectToRoot(geneBlockObjVect[i]);
+	}
+	geneBlockObjVect = gener->generateBlock(8,11,5,vec3(-30,-20,100));
+	for(size_t i=0; i<geneBlockObjVect.size(); i++)
+	{
+		Scene->addObjectToRoot(geneBlockObjVect[i]);
+	}
 
 	// physics demo
 	/*uint texture = Scene->loadTexture("images/art.png");
