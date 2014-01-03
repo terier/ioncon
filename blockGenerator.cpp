@@ -2,11 +2,15 @@
 #include "tiny_obj_loader.h"
 
 blockGenerator::blockGenerator(const char* startF, const char* itemF,
-								const char* endF, const char* base)
+								const char* endF, const char* base,
+								uint startTex, uint itemTex, uint endTex)
 {
 	start = new CMesh(startF, base);
 	item = new CMesh(itemF, base);
 	end = new CMesh(endF, base);
+	startT = startTex;
+	itemT = itemTex;
+	endT = endTex;
 }
 
 blockGenerator::~blockGenerator()
@@ -29,6 +33,7 @@ std::vector<CObjectMesh*> blockGenerator::generateBlock(int w, int h, int d, vec
 			basePos = bPos + vec3(k*10.0f, 0, i*10.0f);
 			//create base object
 			CObjectMesh* startObjMesh = new CObjectMesh(start);
+			startObjMesh->setTexture(0, startT);
 			startObjMesh->setPosition(basePos);
 			finalObjectVect.push_back(startObjMesh);
 
@@ -45,6 +50,7 @@ std::vector<CObjectMesh*> blockGenerator::generateBlock(int w, int h, int d, vec
 					else
 						curPos = prevPos + vec3(0,6.75f,0);
 					CObjectMesh* tempObj = new CObjectMesh(item);
+					tempObj->setTexture(0, itemT);
 					tempObj->setPosition(curPos);
 					finalObjectVect.push_back(tempObj);
 					prevPos = curPos;

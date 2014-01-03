@@ -11,6 +11,8 @@ public:
 	virtual ~CPhysicsObject();
 
 	virtual void getWorldTransform(btTransform& wt) const;
+	btVector3 getInertia() const { return Inertia; }
+
 	virtual void setWorldTransform(const btTransform& wt);
 
 	CObject* getRenderObject() { return Object; }
@@ -20,6 +22,7 @@ private:
 	CObject* Object;
 	btRigidBody* RBody;
 	btTransform Transform;
+	btVector3 Inertia;
 };
 
 #endif

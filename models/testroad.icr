@@ -1,8 +1,8 @@
 # this is a test road
 # hope it works ....
 
-scalespline 40
-scalestencil 3 2
+scalespline 400
+scalestencil 6 4
 scaletexture 0.0006
 subdiv 300
 

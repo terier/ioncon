@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E4F1ED90-5ECB-433C-B0D4-0201A348DCCC}</ProjectGuid>
+    <RootNamespace>RGTISeminar</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>C:\Data\Programiranje\freeglut\include;C:\Data\Programiranje\Bullet\src</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;BulletDynamics.lib;BulletCollision.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Data\Programiranje\freeglut\lib\x86;C:\Data\Programiranje\Bullet\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>C:\Data\Programiranje\freeglut\include;C:\Data\Programiranje\GLEW\include;C:\Data\Programiranje\Bullet\src</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Data\Programiranje\GLEW\lib\Release\Win32;C:\Data\Programiranje\freeglut\lib\x86;C:\Data\Programiranje\Bullet\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glu32.lib;BulletDynamics.lib;BulletCollision.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="blockGenerator.cpp" />
+    <ClCompile Include="CCamera.cpp" />
+    <ClCompile Include="CCameraFollower.cpp" />
+    <ClCompile Include="CCameraFPS.cpp" />
+    <ClCompile Include="CGLUTApplication.cpp" />
+    <ClCompile Include="CMesh.cpp" />
+    <ClCompile Include="CObject.cpp" />
+    <ClCompile Include="CObjectMesh.cpp" />
+    <ClCompile Include="CObjectSkyDome.cpp" />
+    <ClCompile Include="CPhysicsObject.cpp" />
+    <ClCompile Include="CPhysicsWorld.cpp" />
+    <ClCompile Include="CScene.cpp" />
+    <ClCompile Include="CSpline.cpp" />
+    <ClCompile Include="glsl.cpp" />
+    <ClCompile Include="icr_loader.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="mat4.cpp" />
+    <ClCompile Include="stb_image.c" />
+    <ClCompile Include="tiny_obj_loader.cpp" />
+    <ClCompile Include="utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="blockGenerator.h" />
+    <ClInclude Include="CCamera.h" />
+    <ClInclude Include="CCameraFollower.h" />
+    <ClInclude Include="CCameraFPS.h" />
+    <ClInclude Include="CEventReceiver.h" />
+    <ClInclude Include="CObjectSkyDome.h" />
+    <ClInclude Include="CPhysicsObject.h" />
+    <ClInclude Include="CShaderCallback.h" />
+    <ClInclude Include="CShaderDefaultCallback.h" />
+    <ClInclude Include="glsl.h" />
+    <ClInclude Include="icr_loader.h" />
+    <ClInclude Include="SControlPoint.h" />
+    <ClInclude Include="CGLUTApplication.h" />
+    <ClInclude Include="CGLUTInterface.h" />
+    <ClInclude Include="CMesh.h" />
+    <ClInclude Include="CObject.h" />
+    <ClInclude Include="CObjectMesh.h" />
+    <ClInclude Include="CObjectShapes.h" />
+    <ClInclude Include="CPhysicsWorld.h" />
+    <ClInclude Include="CScene.h" />
+    <ClInclude Include="CSpline.h" />
+    <ClInclude Include="mat4.h" />
+    <ClInclude Include="opengl.h" />
+    <ClInclude Include="physics.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="tiny_obj_loader.h" />
+    <ClInclude Include="utils.h" />
+    <ClInclude Include="vbo.h" />
+    <ClInclude Include="vec3.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

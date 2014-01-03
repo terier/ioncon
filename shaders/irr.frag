@@ -16,7 +16,7 @@ void main( void )
    fvNormal.xy*=2.0;
    fvNormal.xy-=1.0;
    
-   vec2 tc = gl_TexCoord[0];
+   vec2 tc = gl_TexCoord[0].xy;
    tc.y *= 0.1;
    float stencil = texture2D(stencilMap, tc).r;
    
@@ -36,6 +36,7 @@ void main( void )
    
    vec4  fvTotalDiffuse   = vec4(1,1,1,1) * fNDotL1* fvBaseColor; 
    vec4  fvTotalSpecular  = fNDotL1*vec4(1,0.8,0.5,0) * ( pow( fRDotV1, 2.0 ) ) * stencil;
+   //vec4  fvTotalSpecular  = fNDotL1*vec4(0.8,0.8,1,0) * ( pow( fRDotV1, 2.0 ) ) * stencil;
    
    vec4 color = fvTotalAmbient + fvTotalDiffuse + fvTotalSpecular;
    gl_FragColor = color;

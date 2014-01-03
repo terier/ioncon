@@ -7,6 +7,7 @@
 #include "CEventReceiver.h"
 #include "CScene.h"
 #include "CCameraFPS.h"
+#include "CCameraFollower.h"
 
 struct SGLUTParameters
 {
@@ -52,8 +53,11 @@ private:
 	CScene* Scene;
 	CPhysicsWorld* Physics;
 	cwc::glShaderManager* ShaderManager;
-	CCameraFPS* Camera;
+	//CCameraFPS* Camera;
+	CCameraFollower* Camera;
 	btClock Clock;
+	btRaycastVehicle* Vehicle;
+	CObject* wheel[4];
 
 	bool KeyDown[256];
 };

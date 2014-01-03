@@ -23,5 +23,8 @@ void CPhysicsObject::getWorldTransform(btTransform& wt) const
 void CPhysicsObject::setWorldTransform(const btTransform& wt)
 {
 	if (Object)
+	{
 		wt.getOpenGLMatrix(Object->getTransformationPointer().M);
+		Object->setPositionNoUpdate(createIonconVector(wt.getOrigin()));
+	}
 }

@@ -5,6 +5,6 @@
 
 #include "CMesh.h"
 
-CMesh* loadRoad(const char* fname);
+CMesh* loadRoad(const char* fname, CSpline** splinedst);
 
 #endif

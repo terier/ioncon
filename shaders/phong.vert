@@ -1,5 +1,5 @@
 #define MAX_LIGHTS 8
-#define NUM_LIGHTS 1
+#define NUM_LIGHTS 2
 
 varying vec3 normal, lightDir[MAX_LIGHTS], eyeVec;
 

@@ -3,7 +3,7 @@
 #include <vector>
 #include "CSpline.h"
 
-CMesh* loadRoad(const char* fname)
+CMesh* loadRoad(const char* fname, CSpline** splinedst)
 {
 	printf("loading %s...\n", fname);
 	FILE* f = fopen(fname, "r");
@@ -50,6 +50,8 @@ CMesh* loadRoad(const char* fname)
 		}
 	}
 	fclose(f);
+
+	*splinedst = spline;
 
 	return new CMesh(spline, stencil, subdiv, texscale, stencilscale);
 }

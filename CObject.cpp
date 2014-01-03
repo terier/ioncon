@@ -3,6 +3,8 @@
 CObject::CObject(CObject* parent, const vec3& pos, const vec3& rot) :
 Parent(0), Position(pos), Rotation(rot)
 {
+	for (int i=0; i<10; i++)
+		Textures[i] = 0;
 	setParent(Parent);
 	updateTransformation();
 }

@@ -192,6 +192,7 @@ vec3 mat4::mulnorm(const vec3& v)
 mat4& mat4::operator=(const mat4& m)
 {
 	setTo(m);
+	return *this;
 }
 
 mat4& mat4::operator*=(const mat4& m)

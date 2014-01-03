@@ -26,8 +26,11 @@ public:
 
 	void setParent(CObject* parent);
 	void setPosition(const vec3& v) { Position = v; updateTransformation(); }
+	void setPositionNoUpdate(const vec3& v) { Position = v; }
 	void setRotation(const vec3& v) { Rotation = v; updateTransformation(); }
+	void setRotationNoUpdate(const vec3& v) { Rotation = v; }
 	void setTexture(uint i, uint tex) { Textures[i] = tex; }
+	void setTransformation(const mat4& trans) { Transformation = trans; }
 
 	virtual void render();
 	virtual void animate(float dt);
