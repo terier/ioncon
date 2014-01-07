@@ -1,10 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include "CGLUTApplication.h"
 #include "CGLUTInterface.h"
 
 int main(int argc, char **argv)
 {
+	srand((unsigned int) time(0));
 	SGLUTParameters param;
 	param.FSAA = true;
 	param.WindowTitle = "IonCon 0.1";

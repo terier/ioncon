@@ -55,3 +55,39 @@ CMesh* loadRoad(const char* fname, CSpline** splinedst)
 
 	return new CMesh(spline, stencil, subdiv, texscale, stencilscale);
 }
+
+void loadRoadProperties(const char* fname, SRoadProperties& props)
+{
+	printf("loading road props: %s ...\n", fname);
+	FILE* f = fopen(fname, "r");
+	if (!f)
+	{
+		printf("cannot open file %s!\n", fname);
+		return;
+	}
+
+	char type[50];
+	vec3 b1, b2, b3, b4; // buffers
+	while (fscanf(f, "%s", &type) > 0)
+	{
+		if (!strcmp(type, "stencil")) {
+			fscanf(f, "%f %f %f", &b1.X, &b1.Y, &b1.Z);
+			props.Stencil.push_back(b1);
+		} else if (!strcmp(type, "scalespline")) {
+			fscanf(f, "%f", &props.ScaleSpline);
+		} else if (!strcmp(type, "scaletexture")) {
+			fscanf(f, "%f", &props.ScaleTexture);
+		} else if (!strcmp(type, "scalestencil")) {
+			fscanf(f, "%f %f", &props.ScaleStencil.X, &props.ScaleStencil.Y);
+		} else if (!strcmp(type, "subdiv")) {
+			fscanf(f, "%d", &props.Subdiv);
+		} else if (!strcmp(type, "#")) {
+			while (fgetc(f) != '\n')
+			{ // deliberately empty
+			}
+		} else if (!strcmp(type, "break")) {
+			break;
+		}
+	}
+	fclose(f);
+}

@@ -11,6 +11,16 @@ void printfloat(float f)
 	printf("%5.2f\n", f);
 }
 
+float frand()
+{
+	return rand() / (float) RAND_MAX;
+}
+
+float frandm()
+{
+	return (rand() / (float) (RAND_MAX / 2)) - 1;
+}
+
 btVector3 createBulletVector(const vec3& v)
 {
 	return btVector3(v.X, v.Y, v.Z);

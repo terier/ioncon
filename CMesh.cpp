@@ -90,7 +90,7 @@ CMesh::CMesh(CSpline* spline,
 		}
 		firstIteration = false;
 		t += dt;
-		texcoord += spline->getDerivative(t).len();
+		texcoord += spline->getDerivative(t).len() * dt;
 	}
 
 	Shapes.push_back(shape);

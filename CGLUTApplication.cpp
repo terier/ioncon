@@ -10,6 +10,7 @@
 #include "glsl.h"
 #include "CShaderDefaultCallback.h"
 #include "blockGenerator.h"
+#include "roadGenerator.h"
 
 CGLUTApplication::CGLUTApplication(const SGLUTParameters& param) :
 	DoubleBuffering(param.DoubleBuffering)
@@ -95,7 +96,12 @@ void CGLUTApplication::init()
 	uint roadtex = Scene->loadTexture("images/roadtex3.png");
 	uint normaltex = Scene->loadTexture("images/normal2.jpg", true);
 	uint stenciltex = Scene->loadTexture("images/roadstencil.jpg", true);
-	CMesh* roadMesh = loadRoad("models/testroad.icr", &spline);
+	//CMesh* roadMesh = loadRoad("models/testroad.icr", &spline);
+	SRoadProperties roadprops;
+	loadRoadProperties("models/testroad.icr", roadprops);
+	roadprops.Subdiv = 1000;
+	spline = generateRoad(10, 1000, 500, PI * 0.25f);
+	CMesh* roadMesh = new CMesh(spline, roadprops.Stencil, roadprops.Subdiv, roadprops.ScaleTexture, roadprops.ScaleStencil);
 	CObjectMesh* roadObject = new CObjectMesh(roadMesh);
 	roadObject->setTexture(0, roadtex);
 	roadObject->setTexture(1, normaltex);
@@ -132,10 +138,12 @@ void CGLUTApplication::init()
 	// car0 - Chevrolet Corvette
 	CMesh* carMesh = new CMesh("models/cars/corvette.obj", "models/cars/");
 	CMesh* carHull = new CMesh("models/cars/corvette_hull.obj", "models/cars/");
+	//CMesh* carMesh = new CMesh("models/cars/sls_amg.obj", "models/cars/");
+	//CMesh* carHull = new CMesh("models/cars/sls_amg_hull.obj", "models/cars/");
 	CMesh* wheelMesh = new CMesh("models/cars/corvette_wheel.obj", "models/cars/");
 	btCollisionShape* carShape = Physics->generateConvexHullShape(carHull);
 	CObjectMesh* carObject = Scene->addObjectMesh(carMesh);
-	carObject->setPosition(spline->getPosition(0) + vec3(0,5,0));
+	carObject->setPosition(spline->getPosition(0) + vec3(0,20,0));
 	carObject->setShader(phongShader);
 	Camera->setFollowedObject(carObject);
 
@@ -145,7 +153,7 @@ void CGLUTApplication::init()
 	props.WheelMesh = wheelMesh;
 	props.Mass = 0.4f;
 	props.EngineForce = 12.f;
-	props.BrakeForce = 3.5f;
+	props.BrakeForce = 0.15f;
 
 	Vehicle = addCar(props);
 

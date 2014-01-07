@@ -3,7 +3,7 @@
 
 scalespline 400
 scalestencil 6 4
-scaletexture 0.0006
+scaletexture 0.02
 subdiv 300
 
 # stencil definition
