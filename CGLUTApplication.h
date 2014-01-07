@@ -8,6 +8,7 @@
 #include "CScene.h"
 #include "CCameraFPS.h"
 #include "CCameraFollower.h"
+#include "CCar.h"
 
 struct SGLUTParameters
 {
@@ -37,6 +38,8 @@ public:
 	void render();
 	void mouseMove(int x, int y);
 
+	CCar* addCar(SCarProperties& props);
+
 	virtual void displayFunc();
 	virtual void idleFunc();
 	virtual void mouseFunc(int button, int state, int x, int y);
@@ -56,7 +59,7 @@ private:
 	//CCameraFPS* Camera;
 	CCameraFollower* Camera;
 	btClock Clock;
-	btRaycastVehicle* Vehicle;
+	CCar* Vehicle;
 	CObject* wheel[4];
 
 	bool KeyDown[256];

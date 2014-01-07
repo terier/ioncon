@@ -4,6 +4,7 @@
 #include "CMesh.h"
 #include "CObjectMesh.h"
 #include "CPhysicsObject.h"
+#include "CCar.h"
 
 class CPhysicsWorld
 {
@@ -16,6 +17,7 @@ public:
 	CPhysicsObject* addDynamicObject(CObject* object, btCollisionShape* shape, float mass);
 	CPhysicsObject* addConvexHullObject(CObjectMesh* object, float mass);
 	CPhysicsObject* addStaticMeshObject(CObjectMesh* object);
+	CCar* addCar(SCarProperties& props);
 
 	btConvexHullShape* generateConvexHullShape(const CMesh* mesh);
 	btBvhTriangleMeshShape* generateStaticMeshShape(const CMesh* mesh);
@@ -26,6 +28,7 @@ private:
 	btCollisionDispatcher* Dispatcher;
 	btSequentialImpulseConstraintSolver* Solver;
 	btDiscreteDynamicsWorld* World;
+	btVehicleRaycaster* Raycaster;
 };
 
 #endif

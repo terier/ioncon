@@ -126,62 +126,28 @@ void CGLUTApplication::init()
 		lamp->setTransformation(basis.transpose());
 	}
 
-	/*CObject* planeObject = new CObjectPlane(100.f,10);
-	planeObject->setTexture(0, Scene->loadTexture("images/art.png"));
-	planeObject->setPosition(vec3(0,-2,0));
-	Scene->addObjectToRoot(planeObject);
-	btCollisionShape* planeShape = new btStaticPlaneShape(btVector3(0,1,0), 0);
-	CPhysicsObject* planePhysics = Physics->addDynamicObject(planeObject, planeShape, 0);
-	planePhysics->getPhysicsObject()->setFriction(0.5f);*/
-
 	// phong shader
 	cwc::glShader* phongShader = ShaderManager->loadfromFile("shaders/phong.vert", "shaders/phong.frag");
 	
 	// car0 - Chevrolet Corvette
 	CMesh* carMesh = new CMesh("models/cars/corvette.obj", "models/cars/");
 	CMesh* carHull = new CMesh("models/cars/corvette_hull.obj", "models/cars/");
+	CMesh* wheelMesh = new CMesh("models/cars/corvette_wheel.obj", "models/cars/");
 	btCollisionShape* carShape = Physics->generateConvexHullShape(carHull);
 	CObjectMesh* carObject = Scene->addObjectMesh(carMesh);
 	carObject->setPosition(spline->getPosition(0) + vec3(0,5,0));
 	carObject->setShader(phongShader);
-	CPhysicsObject* carPhysics = Physics->addDynamicObject(carObject, carShape, 0.1f);
-
 	Camera->setFollowedObject(carObject);
 
-	btDynamicsWorld* world = Physics->getWorld();
-	btRaycastVehicle::btVehicleTuning tuning;
-	tuning.m_suspensionStiffness = 50.f;
-	tuning.m_suspensionDamping = 2.3f;
-	//tuning.m_suspensionCompression = .5f;
-	tuning.m_frictionSlip = 1000.f;
-	btVehicleRaycaster* raycaster = new btDefaultVehicleRaycaster(world);
-	Vehicle = new btRaycastVehicle(tuning, carPhysics->getPhysicsObject(), raycaster);
-	world->addVehicle(Vehicle);
-	Vehicle->addWheel(btVector3(-2.7f, 0.0f, -4.5f), btVector3(0,-1,0), btVector3(1,0,0),
-		0.3f, 1.4f, tuning, true);
-	Vehicle->addWheel(btVector3(2.7f, 0.0f, -4.5f), btVector3(0,-1,0), btVector3(1,0,0),
-		0.3f, 1.4f, tuning, true);
-	Vehicle->addWheel(btVector3(-2.7f, 0.0f, 4.2f), btVector3(0,-1,0), btVector3(1,0,0),
-		0.3f, 1.4f, tuning, false);
-	Vehicle->addWheel(btVector3(2.7f, 0.0f, 4.2f), btVector3(0,-1,0), btVector3(1,0,0),
-		0.3f, 1.4f, tuning, false);
-	carPhysics->getPhysicsObject()->setFriction(0.7f);
-	carPhysics->getPhysicsObject()->setDamping(0.2f,0.1f);
-	carPhysics->getPhysicsObject()->setRestitution(0.2f);
-	Vehicle->getWheelInfo(0).m_rollInfluence = 0.2f;
-	Vehicle->getWheelInfo(1).m_rollInfluence = 0.2f;
-	Vehicle->getWheelInfo(2).m_rollInfluence = 0.2f;
-	Vehicle->getWheelInfo(3).m_rollInfluence = 0.2f;
+	SCarProperties props;
+	props.ChasisObject = carObject;
+	props.ChasisShape = carShape;
+	props.WheelMesh = wheelMesh;
+	props.Mass = 0.4f;
+	props.EngineForce = 12.f;
+	props.BrakeForce = 3.5f;
 
-	CMesh* wheelMesh = new CMesh("models/cars/corvette_wheel.obj", "models/cars/");
-	wheel[0] = new CObjectMesh(wheelMesh);
-	Scene->addObjectToRoot(wheel[0]);
-	wheel[1] = new CObjectMesh(wheelMesh);
-	Scene->addObjectToRoot(wheel[1]);
-	wheel[2] = new CObjectMesh(wheelMesh);
-	Scene->addObjectToRoot(wheel[2]);
-	wheel[3] = new CObjectMesh(wheelMesh);
-	Scene->addObjectToRoot(wheel[3]);
+	Vehicle = addCar(props);
 
 	// car1 - Porsche Carrera 911
 	/*CMesh* carMesh1 = new CMesh("models/cars/911.obj", "models/cars/");
@@ -235,8 +201,7 @@ void CGLUTApplication::init()
 	// ---------------------------------------------------------------------------------------------
 	
 	//block bigHouse
-	/*CMesh* houseMesh = new CMesh("models/architecture/bigHouse.obj", "models/architecture/");
-	CObjectMesh* houseObject = Scene->addObjectMesh(houseMesh);
+	/*ObjectMesh* houseObject = Scene->addObjectMesh(houseMesh);
 	houseObject->setPosition(vec3(300,0,180));
 	houseObject->setShader(phongShader);
 
@@ -342,58 +307,28 @@ void CGLUTApplication::step()
 
 	if (KeyDown['i'] || KeyDown['I'] || KeyDown['k'] || KeyDown['K'])
 	{
-		float engine = 3.f;
 		if (KeyDown['i'] || KeyDown['I'])
-		{
-			Vehicle->applyEngineForce(-engine, 2);
-			Vehicle->applyEngineForce(-engine, 3);
-		}
+			Vehicle->accelerate();
 		else
-		{
-			Vehicle->applyEngineForce(engine, 2);
-			Vehicle->applyEngineForce(engine, 3);
-		}
+			Vehicle->reverse();
 	}
 	else
-	{
-		Vehicle->applyEngineForce(0, 2);
-		Vehicle->applyEngineForce(0, 3);
-	}
+		Vehicle->idle();
 
-
-	static float steer = 0.f;
-	float steerspeed = 1.f;
-	float maxsteer = 0.1f;
 	if (KeyDown['j'] || KeyDown['J'] || KeyDown['l'] || KeyDown['L'])
 	{
 		if (KeyDown['j'] || KeyDown['J'])
-		{
-			steer += steerspeed * dt;
-			if (steer > maxsteer)
-				steer = maxsteer;
-		}
+			Vehicle->steerLeft(dt);
 		else
-		{
-			steer -= steerspeed * dt;
-			if (steer < -maxsteer)
-				steer = -maxsteer;
-		}
+			Vehicle->steerRight(dt);
 	}
 	else
-	{
-		if (steer < 0)
-			steer += steerspeed * dt;
-		else
-			steer -= steerspeed * dt;
-	}
-	Vehicle->setSteeringValue(steer, 2);
-	Vehicle->setSteeringValue(steer, 3);
+		Vehicle->steerStraight(dt);
 
-	for (int i=0; i<4; i++)
-	{
-		btTransform trans = Vehicle->getWheelTransformWS(i);
-		trans.getOpenGLMatrix(wheel[i]->getTransformationPointer().M);
-	}
+	if (KeyDown[' '])
+		Vehicle->brake();
+	else
+		Vehicle->brakeRelease();
 
 
 	if (KeyDown[27])
@@ -401,6 +336,14 @@ void CGLUTApplication::step()
 
 	if (KeyDown['p'])
 		glutFullScreenToggle();
+}
+
+CCar* CGLUTApplication::addCar(SCarProperties& props)
+{
+	CCar* car = Physics->addCar(props);
+	for (int i=0; i<4; i++)
+		Scene->addObjectToRoot(car->getWheelObject(i));
+	return car;
 }
 
 float CGLUTApplication::getTimeStep()

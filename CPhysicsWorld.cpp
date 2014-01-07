@@ -10,6 +10,7 @@ CPhysicsWorld::CPhysicsWorld()
 	Solver = new btSequentialImpulseConstraintSolver();
 	World = new btDiscreteDynamicsWorld(Dispatcher, Broadphase, Solver, Configuration);
 	World->setGravity(btVector3(0, -50, 0));
+	Raycaster = new btDefaultVehicleRaycaster(World);
 }
 
 CPhysicsWorld::~CPhysicsWorld()
@@ -74,4 +75,12 @@ CPhysicsObject* CPhysicsWorld::addStaticMeshObject(CObjectMesh* object)
 {
 	btCollisionShape* shape = generateStaticMeshShape(object->getMesh());
 	return addDynamicObject(object, shape, 0);
+}
+
+CCar* CPhysicsWorld::addCar(SCarProperties& props)
+{
+	CCar* car = new CCar(props, Raycaster);
+	World->addRigidBody(car->getPhysicsObject());
+	World->addVehicle(car->getVehicle());
+	return car;
 }

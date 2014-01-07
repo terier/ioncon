@@ -25,7 +25,7 @@ void main (void)
 	  final_color += gl_LightSource[i].diffuse * gl_FrontMaterial.diffuse * lambertTerm;	
       vec3 E = normalize(eyeVec);
       vec3 R = reflect(-L, N);
-      float specular = pow( max(dot(R, E), 0.0), 100 );
+      float specular = pow( max(dot(R, E), 0.0), gl_FrontMaterial.shininess );
       final_color += vec4(1,1,1,1) * specular;
     }
   }
