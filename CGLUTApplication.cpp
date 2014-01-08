@@ -77,7 +77,7 @@ void CGLUTApplication::init()
 	Camera = new CCameraFollower(0);
 	Camera->setDistance(20.f);
 	Camera->setDisplacement(vec3(0,10,0));
-	Camera->setFar(1500.f);
+	Camera->setFar(3000.f);
 	Camera->setStiffness(50.f);
 	Camera->setSpeed(0.2f);
 
@@ -102,7 +102,7 @@ void CGLUTApplication::init()
 	SRoadProperties roadprops;
 	loadRoadProperties("models/testroad.icr", roadprops);
 	roadprops.Subdiv = 1000;
-	spline = generateRoad(10, 1000, 500, PI * 0.15f);
+	spline = generateRoad(10, 800, 1000, PI * 0.1f);
 	CMesh* roadMesh = new CMesh(spline, roadprops.Stencil, roadprops.Subdiv, roadprops.ScaleTexture, roadprops.ScaleStencil);
 	CObjectMesh* roadObject = new CObjectMesh(roadMesh);
 	roadObject->setTexture(0, roadtex);
@@ -145,7 +145,7 @@ void CGLUTApplication::init()
 	// put a creepy red sphere above the starting position
 
 	CObject* redSphere = new CObjectMesh(new CMesh("models/startflag.obj", "models/"));
-	redSphere->setPosition(spline->getPosition(0) + vec3(0,10,0));
+	redSphere->setPosition(spline->getPosition(0) + vec3(0,15,0));
 	redSphere->setTexture(0, Scene->loadTexture("images/startflag.png"));
 	Scene->addObjectToRoot(redSphere);
 
@@ -162,7 +162,7 @@ void CGLUTApplication::init()
 	CMesh* wheelMesh = new CMesh("models/cars/corvette_wheel.obj", "models/cars/");
 	btCollisionShape* carShape = Physics->generateConvexHullShape(carHull);
 	CObjectMesh* carObject = Scene->addObjectMesh(carMesh);
-	carObject->setPosition(spline->getPosition(0) + vec3(0,20,0));
+	carObject->setPosition(spline->getPosition(0) + vec3(0,10,0));
 	carObject->setShader(phongShader);
 	Camera->setFollowedObject(carObject);
 
@@ -173,10 +173,12 @@ void CGLUTApplication::init()
 	props.MaxSteer = 0.2f;
 	props.Mass = 0.65f;
 	props.SuspensionDamping = 20.f;
-	props.SuspensionStiffness = 42.f;
+	props.SuspensionStiffness = 100.f;
 	props.FrictionSlip = 3.5f;
 	props.EngineForce = 9.f;
 	props.BrakeForce = 0.2f;
+	props.WheelPositionBackRight.Y += 2;
+	props.WheelPositionFrontLeft.Y += 2;
 
 	Vehicle = addCar(props);
 	CPController->addObjectTracker(Vehicle->getRenderObject());

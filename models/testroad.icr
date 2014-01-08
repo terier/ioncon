@@ -7,28 +7,29 @@ scaletexture 0.02
 subdiv 300
 
 # stencil definition
-stencil -4.4  0        0.24
+stencil 4.4   -0.1     0
+stencil -4.4  -0.1     0.24
 stencil -4.4  2        0.02
 stencil -4.4  2        0.02
 stencil -4.2  2        0
 stencil -4.2  2        0
-stencil -4.2  0.6      0.22
-stencil -4.2  0.6      0.22
-stencil -4    0.6      0.24
-stencil -4    0.6      0.24
+stencil -4.2  0.4      0.22
+stencil -4.2  0.4      0.22
+stencil -4    0.2      0.24
+stencil -4    0.2      0.24
 stencil -4    0        0.3
 stencil -4    0        0.3
 stencil 4     0        0.7
 stencil 4     0        0.7
-stencil 4     0.6      0.76
-stencil 4     0.6      0.76
-stencil 4.2   0.6      0.78
-stencil 4.2   0.6      0.78
+stencil 4     0.2      0.76
+stencil 4     0.2      0.76
+stencil 4.2   0.4      0.78
+stencil 4.2   0.4      0.78
 stencil 4.2   2        1
 stencil 4.2   2        1
 stencil 4.4   2        0.98
 stencil 4.4   2        0.98
-stencil 4.4   0        0.76
+stencil 4.4   -0.1     0.76
 
 # control points
 control   1 -0.3 3    -1 0 -3    2 1 -1    -2 8 -1
