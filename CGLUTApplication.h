@@ -9,6 +9,7 @@
 #include "CCameraFPS.h"
 #include "CCameraFollower.h"
 #include "CCar.h"
+#include "CObjectCheckpointController.h"
 
 struct SGLUTParameters
 {
@@ -58,6 +59,7 @@ private:
 	cwc::glShaderManager* ShaderManager;
 	//CCameraFPS* Camera;
 	CCameraFollower* Camera;
+	CObjectCheckpointController* CPController;
 	btClock Clock;
 	CCar* Vehicle;
 	CObject* wheel[4];

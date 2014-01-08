@@ -1,9 +1,11 @@
 #include "CGLUTApplication.h"
 #include <stdio.h>
+#include <time.h>
 
 #include "CObjectMesh.h"
 #include "CObjectShapes.h"
 #include "CObjectSkyDome.h"
+#include "CObjectCheckpointController.h"
 #include "utils.h"
 #include "physics.h"
 #include "icr_loader.h"
@@ -77,7 +79,7 @@ void CGLUTApplication::init()
 	Camera->setDisplacement(vec3(0,10,0));
 	Camera->setFar(1500.f);
 	Camera->setStiffness(50.f);
-	Camera->setSpeed(0.03f);
+	Camera->setSpeed(0.2f);
 
 	float v[4] = {1,1,1,1};
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, v);
@@ -100,7 +102,7 @@ void CGLUTApplication::init()
 	SRoadProperties roadprops;
 	loadRoadProperties("models/testroad.icr", roadprops);
 	roadprops.Subdiv = 1000;
-	spline = generateRoad(10, 1000, 500, PI * 0.25f);
+	spline = generateRoad(10, 1000, 500, PI * 0.15f);
 	CMesh* roadMesh = new CMesh(spline, roadprops.Stencil, roadprops.Subdiv, roadprops.ScaleTexture, roadprops.ScaleStencil);
 	CObjectMesh* roadObject = new CObjectMesh(roadMesh);
 	roadObject->setTexture(0, roadtex);
@@ -117,6 +119,7 @@ void CGLUTApplication::init()
 	roadObject->setShader(shader);
 	roadObject->setShaderCallback(callback);
 
+	// put some lamps ...
 	CMesh* lampMesh = new CMesh("models/lamp01.obj", "models/");
 	float tend = (float) spline->getNumberOfControlPoints();
 	float dt = tend / 100.f;
@@ -131,6 +134,22 @@ void CGLUTApplication::init()
 		CObject* lamp = Scene->addObjectMesh(lampMesh);
 		lamp->setTransformation(basis.transpose());
 	}
+
+	// add checkpoints
+	CPController = new CObjectCheckpointController();
+	Scene->addObjectToRoot(CPController); // for animation and querying
+	int nnn = 10;
+	for (int i=0; i<spline->getNumberOfControlPoints() * nnn; i++)
+		CPController->addCheckpoint(SCheckpoint(spline->getPosition(i/(float)nnn), 30.f));
+
+	// put a creepy red sphere above the starting position
+
+	CObject* redSphere = new CObjectMesh(new CMesh("models/startflag.obj", "models/"));
+	redSphere->setPosition(spline->getPosition(0) + vec3(0,10,0));
+	redSphere->setTexture(0, Scene->loadTexture("images/startflag.png"));
+	Scene->addObjectToRoot(redSphere);
+
+
 
 	// phong shader
 	cwc::glShader* phongShader = ShaderManager->loadfromFile("shaders/phong.vert", "shaders/phong.frag");
@@ -160,6 +179,7 @@ void CGLUTApplication::init()
 	props.BrakeForce = 0.2f;
 
 	Vehicle = addCar(props);
+	CPController->addObjectTracker(Vehicle->getRenderObject());
 
 	// car1 - Porsche Carrera 911
 	/*CMesh* carMesh1 = new CMesh("models/cars/911.obj", "models/cars/");
@@ -342,6 +362,26 @@ void CGLUTApplication::step()
 	else
 		Vehicle->brakeRelease();
 
+	// checkpoint test
+	static clock_t start = clock();
+	static clock_t end = clock();
+	static uint current = -1;
+	uint ln = CPController->getLapNum(Vehicle->getRenderObject());
+	if (current != ln)
+	{
+		end = clock();
+		printf("--- Lap time: %5.2fs\n", (end-start)/(float)CLOCKS_PER_SEC);
+		start = end;
+		printf("--- Lap Number: %u\n", ln);
+		current = ln;
+	}
+	/*static uint ccp = -1;
+	uint cp = CPController->getCurrentCheckpoint(Vehicle->getRenderObject());
+	if (cp != ccp)
+	{
+		printf("--- Checkpoint number: %u\n", cp);
+		ccp = cp;
+	}*/
 
 	if (KeyDown[27])
 		exit(0);

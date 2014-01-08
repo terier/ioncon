@@ -14,6 +14,10 @@ public:
 	{
 	}
 
+	virtual ~CObjectMesh()
+	{
+	}
+
 	CMesh* getMesh() { return Mesh; }
 	cwc::glShader* getShader() { return Shader; }
 	CShaderCallback* getShaderCallback() { return ShaderCallback; }
