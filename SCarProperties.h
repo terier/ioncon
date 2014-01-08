@@ -23,7 +23,7 @@ struct SCarProperties
 		RollInfluence = 0.1f;
 
 		WheelPositionFrontLeft = vec3(-2.7f, 0.f, -4.5f);
-		WheelPositionBackRight = vec3(2.7f, 0.f, 5.2f);
+		WheelPositionBackRight = vec3(2.7f, 0.f, 4.2f);
 		WheelRestLength = 0.3f;
 		WheelRadius = 1.4f;
 
