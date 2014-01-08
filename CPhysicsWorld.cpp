@@ -9,7 +9,7 @@ CPhysicsWorld::CPhysicsWorld()
 	Dispatcher = new btCollisionDispatcher(Configuration);
 	Solver = new btSequentialImpulseConstraintSolver();
 	World = new btDiscreteDynamicsWorld(Dispatcher, Broadphase, Solver, Configuration);
-	World->setGravity(btVector3(0, -50, 0));
+	World->setGravity(btVector3(0, -80, 0));
 	Raycaster = new btDefaultVehicleRaycaster(World);
 }
 

@@ -91,30 +91,38 @@ void CCar::steer(float dir, float dt)
 
 void CCar::accelerate()
 {
+	Vehicle->applyEngineForce(EngineForce, 0);
+	Vehicle->applyEngineForce(-EngineForce, 1);
 	Vehicle->applyEngineForce(EngineForce, 2);
 	Vehicle->applyEngineForce(-EngineForce, 3);
 }
 
 void CCar::reverse()
 {
-	Vehicle->applyEngineForce(-EngineForce * 0.8f, 2);
-	Vehicle->applyEngineForce(EngineForce * 0.8f, 3);
+	Vehicle->applyEngineForce(-EngineForce, 2);
+	Vehicle->applyEngineForce(EngineForce, 3);
 }
 
 void CCar::idle()
 {
+	Vehicle->applyEngineForce(0, 0);
+	Vehicle->applyEngineForce(0, 1);
 	Vehicle->applyEngineForce(0, 2);
 	Vehicle->applyEngineForce(0, 3);
 }
 
 void CCar::brake()
 {
-	Vehicle->setBrake(BrakeForce, 2);
-	Vehicle->setBrake(BrakeForce, 3);
+	Vehicle->setBrake(BrakeForce, 0);
+	Vehicle->setBrake(BrakeForce, 1);
+	Vehicle->setBrake(BrakeForce*0.9f, 2);
+	Vehicle->setBrake(BrakeForce*0.9f, 3);
 }
 
 void CCar::brakeRelease()
 {
+	Vehicle->setBrake(0, 0);
+	Vehicle->setBrake(0, 1);
 	Vehicle->setBrake(0, 2);
 	Vehicle->setBrake(0, 3);
 }

@@ -111,6 +111,12 @@
     <ClCompile Include="CCameraFollower.cpp">
       <Filter>Source Files\objects</Filter>
     </ClCompile>
+    <ClCompile Include="CCar.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="roadGenerator.cpp">
+      <Filter>Source Files\road</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CMesh.h">
@@ -202,6 +208,18 @@
     </ClInclude>
     <ClInclude Include="CCameraFollower.h">
       <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="CCar.h">
+      <Filter>Header Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="SCarProperties.h">
+      <Filter>Header Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="SRoadProperties.h">
+      <Filter>Header Files\road</Filter>
+    </ClInclude>
+    <ClInclude Include="roadGenerator.h">
+      <Filter>Header Files\road</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

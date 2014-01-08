@@ -151,9 +151,13 @@ void CGLUTApplication::init()
 	props.ChasisObject = carObject;
 	props.ChasisShape = carShape;
 	props.WheelMesh = wheelMesh;
-	props.Mass = 0.4f;
-	props.EngineForce = 12.f;
-	props.BrakeForce = 0.15f;
+	props.MaxSteer = 0.2f;
+	props.Mass = 0.65f;
+	props.SuspensionDamping = 20.f;
+	props.SuspensionStiffness = 42.f;
+	props.FrictionSlip = 3.5f;
+	props.EngineForce = 9.f;
+	props.BrakeForce = 0.2f;
 
 	Vehicle = addCar(props);
 

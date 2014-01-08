@@ -9,17 +9,17 @@ struct SCarProperties
 	SCarProperties()
 	{
 		FrontWheelDrive = true;
-		EngineForce = 100.f;
-		BrakeForce = 5.f;
-		Mass = 1.f;
+		EngineForce = 9.f;
+		BrakeForce = 0.2f;
+		Mass = 0.5f;
 		WheelMesh = 0;
 		ChasisObject = 0;
 		ChasisShape = 0;
 
-		SuspensionStiffness = 20.f;
-		SuspensionDamping = 10.f;
+		SuspensionStiffness = 30.f;
+		SuspensionDamping = 20.f;
 		SuspensionCompression = 0.f;
-		FrictionSlip = 10.f;
+		FrictionSlip = 3.5f;
 		RollInfluence = 0.1f;
 
 		WheelPositionFrontLeft = vec3(-2.7f, 0.f, -4.5f);
