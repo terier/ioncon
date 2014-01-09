@@ -1,11 +1,14 @@
 #ifndef CSCENE_H_INCL
 #define CSCENE_H_INCL
 
+#include <list>
+
 #include "CObject.h"
 #include "CObjectMesh.h"
 #include "CObjectShapes.h"
 #include "CObjectSkyDome.h"
 #include "CCamera.h"
+#include "COverlayText.h"
 #include "opengl.h"
 
 typedef unsigned int uint;
@@ -16,6 +19,7 @@ public:
 	CScene();
 
 	void addObjectToRoot(CObject* obj);
+	void addOverlayText(COverlayText* overlay);
 
 	CCamera* getActiveCamera() const { return ActiveCam; }
 	vec3 getAmbient() const { return Ambient; }
@@ -40,6 +44,7 @@ private:
 	CObject Root;
 	CObjectSkyDome* SkyDome;
 	CCamera* ActiveCam;
+	std::list<COverlayText*> Overlays;
 	vec3 Ambient;
 	vec3 ClearColor;
 };

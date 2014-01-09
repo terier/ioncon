@@ -34,6 +34,32 @@ void CScene::render()
 	glLightfv(GL_LIGHT0, GL_POSITION, pos);
 
 	Root.render();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();    
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	int w = glutGet(GLUT_WINDOW_WIDTH);
+	int h = glutGet(GLUT_WINDOW_HEIGHT);
+	gluOrtho2D(0, w, 0, h);
+
+	for (std::list<COverlayText*>::iterator it = Overlays.begin(); it != Overlays.end(); it++)
+	{
+		COverlayText* overlay = *it;
+		if (!overlay->is3D())
+		{
+			vec3 pos = overlay->getPosition();
+			glRasterPos2f(pos.X, pos.Y);
+			glutBitmapString(overlay->getFont(), (unsigned char*) overlay->getText().c_str());
+		}
+	}
+
+	glPopMatrix();
+	glMatrixMode( GL_MODELVIEW );
+	glPopMatrix();
 }
 
 void CScene::animate(float dt)

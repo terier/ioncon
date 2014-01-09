@@ -35,6 +35,7 @@ void CObjectSkyDome::render()
 	glPushMatrix();
 	transform();
 	glBindTexture(GL_TEXTURE_2D, getTexture(0));
+	glColor3f(1,1,1);
 	gluSphere(Sphere, 100, 32, 16);
 	CObject::render();
 	glPopMatrix();
