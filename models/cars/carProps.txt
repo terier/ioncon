@@ -1,0 +1,98 @@
+CORVETTE:
+
+
+SCarProperties props;
+props.ChasisObject = carObject;
+props.ChasisShape = carShape;
+props.WheelMesh = wheelMesh;
+props.MaxSteer = 0.2f;
+props.Mass = 0.65f;
+props.SuspensionDamping = 20.f;
+props.SuspensionStiffness = 100.f;
+props.FrictionSlip = 3.5f;
+props.EngineForce = 9.f;
+props.BrakeForce = 0.22f;
+props.WheelPositionBackRight.Y += 2;
+props.WheelPositionFrontLeft.Y += 2;
+
+
+
+CALIFORNIA:
+
+SCarProperties props;
+props.ChasisObject = carObject;
+props.ChasisShape = carShape;
+props.WheelMesh = wheelMesh;
+props.MaxSteer = 0.2f;
+props.Mass = 0.65f;
+props.SuspensionDamping = 20.f;
+props.SuspensionStiffness = 100.f;
+props.FrictionSlip = 3.4f;
+props.EngineForce = 9.f;
+props.BrakeForce = 0.22f;
+rops.WheelPositionBackRight.Y += 2.2;
+props.WheelPositionFrontLeft.Y += 2.2;
+props.WheelPositionBackRight.X += 0.2;
+props.WheelPositionFrontLeft.X -= 0.2;
+props.WheelPositionFrontLeft.Z -= 1.2;
+
+
+MUSTANG:
+
+SCarProperties props;
+props.ChasisObject = carObject;
+props.ChasisShape = carShape;
+props.WheelMesh = wheelMesh;
+props.MaxSteer = 0.2f;
+props.Mass = 0.65f;
+props.SuspensionDamping = 20.f;
+props.SuspensionStiffness = 100.f;
+props.FrictionSlip = 3.4f;
+props.EngineForce = 9.f;
+props.BrakeForce = 0.22f;
+props.WheelPositionBackRight.Y += 2.0;
+props.WheelPositionFrontLeft.Y += 2.0;
+props.WheelPositionBackRight.X += 0.2;
+props.WheelPositionFrontLeft.X -= 0.2;
+props.WheelPositionBackRight.Z += 0.6;
+
+
+SL500:
+
+SCarProperties props;
+props.ChasisObject = carObject;
+props.ChasisShape = carShape;
+props.WheelMesh = wheelMesh;
+props.MaxSteer = 0.2f;
+rops.Mass = 0.65f;
+props.SuspensionDamping = 20.f;
+props.SuspensionStiffness = 100.f;
+props.FrictionSlip = 3.4f;
+props.EngineForce = 9.f;
+props.BrakeForce = 0.22f;
+props.WheelPositionBackRight.Y += 2.2;
+props.WheelPositionFrontLeft.Y += 2.2;
+props.WheelPositionBackRight.X += 0.1;
+props.WheelPositionFrontLeft.X -= 0.2;
+props.WheelPositionBackRight.Z += 0.6;
+
+
+SLSAMG:
+
+SCarProperties props;
+props.ChasisObject = carObject;
+props.ChasisShape = carShape;
+props.WheelMesh = wheelMesh;
+props.MaxSteer = 0.2f;
+props.Mass = 0.65f;
+props.SuspensionDamping = 20.f;
+props.SuspensionStiffness = 100.f;
+props.FrictionSlip = 3.4f;
+props.EngineForce = 9.f;
+props.BrakeForce = 0.22f;
+props.WheelPositionBackRight.Y += 2.2;
+props.WheelPositionFrontLeft.Y += 2.3;
+props.WheelPositionBackRight.X += 0.0;
+props.WheelPositionFrontLeft.X -= 0.0;
+props.WheelPositionFrontLeft.Z -= 0.5;
+props.WheelPositionBackRight.Z -= 0.1;

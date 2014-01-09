@@ -155,15 +155,15 @@ void CGLUTApplication::init()
 	cwc::glShader* phongShader = ShaderManager->loadfromFile("shaders/phong.vert", "shaders/phong.frag");
 	
 	// car0 - Chevrolet Corvette
-	CMesh* carMesh = new CMesh("models/cars/corvette.obj", "models/cars/");
-	CMesh* carHull = new CMesh("models/cars/corvette_hull.obj", "models/cars/");
+	CMesh* carMesh = new CMesh("models/cars/sls_amg.obj", "models/cars/");
+	CMesh* carHull = new CMesh("models/cars/sls_amg_hull.obj", "models/cars/");
 	//CMesh* carMesh = new CMesh("models/cars/sls_amg.obj", "models/cars/");
 	//CMesh* carHull = new CMesh("models/cars/sls_amg_hull.obj", "models/cars/");
-	CMesh* wheelMesh = new CMesh("models/cars/corvette_wheel.obj", "models/cars/");
+	CMesh* wheelMesh = new CMesh("models/cars/sls_amg_wheel.obj", "models/cars/");
 	btCollisionShape* carShape = Physics->generateConvexHullShape(carHull);
 	CObjectMesh* carObject = Scene->addObjectMesh(carMesh);
 	carObject->setPosition(spline->getPosition(0) + vec3(0,10,0));
-	carObject->setShader(phongShader);
+	//carObject->setShader(phongShader);
 	Camera->setFollowedObject(carObject);
 
 	SCarProperties props;
@@ -174,11 +174,15 @@ void CGLUTApplication::init()
 	props.Mass = 0.65f;
 	props.SuspensionDamping = 20.f;
 	props.SuspensionStiffness = 100.f;
-	props.FrictionSlip = 3.5f;
+	props.FrictionSlip = 3.4f;
 	props.EngineForce = 9.f;
-	props.BrakeForce = 0.2f;
-	props.WheelPositionBackRight.Y += 2;
-	props.WheelPositionFrontLeft.Y += 2;
+	props.BrakeForce = 0.22f;
+	props.WheelPositionBackRight.Y += 2.2;
+	props.WheelPositionFrontLeft.Y += 2.3;
+	props.WheelPositionBackRight.X += 0.0;
+	props.WheelPositionFrontLeft.X -= 0.0;
+	props.WheelPositionFrontLeft.Z -= 0.5;
+	props.WheelPositionBackRight.Z -= 0.1;
 
 	Vehicle = addCar(props);
 	CPController->addObjectTracker(Vehicle->getRenderObject());
