@@ -117,6 +117,9 @@
     <ClCompile Include="roadGenerator.cpp">
       <Filter>Source Files\road</Filter>
     </ClCompile>
+    <ClCompile Include="CObjectCheckpointController.cpp">
+      <Filter>Source Files\road</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CMesh.h">
@@ -219,6 +222,9 @@
       <Filter>Header Files\road</Filter>
     </ClInclude>
     <ClInclude Include="roadGenerator.h">
+      <Filter>Header Files\road</Filter>
+    </ClInclude>
+    <ClInclude Include="CObjectCheckpointController.h">
       <Filter>Header Files\road</Filter>
     </ClInclude>
   </ItemGroup>

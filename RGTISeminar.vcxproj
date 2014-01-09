@@ -75,6 +75,7 @@
     <ClCompile Include="CGLUTApplication.cpp" />
     <ClCompile Include="CMesh.cpp" />
     <ClCompile Include="CObject.cpp" />
+    <ClCompile Include="CObjectCheckpointController.cpp" />
     <ClCompile Include="CObjectMesh.cpp" />
     <ClCompile Include="CObjectSkyDome.cpp" />
     <ClCompile Include="CPhysicsObject.cpp" />
@@ -97,6 +98,7 @@
     <ClInclude Include="CCameraFPS.h" />
     <ClInclude Include="CCar.h" />
     <ClInclude Include="CEventReceiver.h" />
+    <ClInclude Include="CObjectCheckpointController.h" />
     <ClInclude Include="CObjectSkyDome.h" />
     <ClInclude Include="CPhysicsObject.h" />
     <ClInclude Include="CShaderCallback.h" />
