@@ -175,7 +175,7 @@ void CGLUTApplication::init()
 	props.SuspensionDamping = 20.f;
 	props.SuspensionStiffness = 100.f;
 	props.FrictionSlip = 3.4f;
-	props.EngineForce = 9.f;
+	props.EngineForce = 9.5f;
 	props.BrakeForce = 0.22f;
 	props.WheelPositionBackRight.Y += 2.2;
 	props.WheelPositionFrontLeft.Y += 2.3;
