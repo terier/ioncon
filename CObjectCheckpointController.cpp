@@ -30,6 +30,11 @@ uint CObjectCheckpointController::getCurrentCheckpoint(CObject* object)
 	return -1;
 }
 
+uint CObjectCheckpointController::getNumberOfCheckpoints()
+{
+	return Checkpoints.size();
+}
+
 void CObjectCheckpointController::animate(float dt)
 {
 	for (size_t i=0; i<Trackers.size(); i++)

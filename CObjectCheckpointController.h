@@ -57,6 +57,7 @@ public:
 	void addObjectTracker(CObject* object);
 	uint getLapNum(CObject* object);
 	uint getCurrentCheckpoint(CObject* object);
+	uint getNumberOfCheckpoints();
 
 	virtual void animate(float dt);
 

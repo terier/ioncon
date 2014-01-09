@@ -1,11 +1,11 @@
 #include "CGLUTApplication.h"
 #include <stdio.h>
 #include <time.h>
+#include <sstream>
 
 #include "CObjectMesh.h"
 #include "CObjectShapes.h"
 #include "CObjectSkyDome.h"
-#include "CObjectCheckpointController.h"
 #include "utils.h"
 #include "physics.h"
 #include "icr_loader.h"
@@ -155,15 +155,15 @@ void CGLUTApplication::init()
 	cwc::glShader* phongShader = ShaderManager->loadfromFile("shaders/phong.vert", "shaders/phong.frag");
 	
 	// car0 - Chevrolet Corvette
-	CMesh* carMesh = new CMesh("models/cars/sls_amg.obj", "models/cars/");
-	CMesh* carHull = new CMesh("models/cars/sls_amg_hull.obj", "models/cars/");
+	CMesh* carMesh = new CMesh("models/cars/corvette.obj", "models/cars/");
+	CMesh* carHull = new CMesh("models/cars/corvette_hull.obj", "models/cars/");
 	//CMesh* carMesh = new CMesh("models/cars/sls_amg.obj", "models/cars/");
 	//CMesh* carHull = new CMesh("models/cars/sls_amg_hull.obj", "models/cars/");
-	CMesh* wheelMesh = new CMesh("models/cars/sls_amg_wheel.obj", "models/cars/");
+	CMesh* wheelMesh = new CMesh("models/cars/corvette_wheel.obj", "models/cars/");
 	btCollisionShape* carShape = Physics->generateConvexHullShape(carHull);
 	CObjectMesh* carObject = Scene->addObjectMesh(carMesh);
 	carObject->setPosition(spline->getPosition(0) + vec3(0,10,0));
-	//carObject->setShader(phongShader);
+	carObject->setShader(phongShader);
 	Camera->setFollowedObject(carObject);
 
 	SCarProperties props;
@@ -174,18 +174,18 @@ void CGLUTApplication::init()
 	props.Mass = 0.65f;
 	props.SuspensionDamping = 20.f;
 	props.SuspensionStiffness = 100.f;
-	props.FrictionSlip = 3.4f;
+	props.FrictionSlip = 3.5f;
 	props.EngineForce = 9.f;
-	props.BrakeForce = 0.22f;
-	props.WheelPositionBackRight.Y += 2.2;
-	props.WheelPositionFrontLeft.Y += 2.3;
-	props.WheelPositionBackRight.X += 0.0;
-	props.WheelPositionFrontLeft.X -= 0.0;
-	props.WheelPositionFrontLeft.Z -= 0.5;
-	props.WheelPositionBackRight.Z -= 0.1;
+	props.BrakeForce = 0.2f;
+	props.WheelPositionBackRight.Y += 2;
+	props.WheelPositionFrontLeft.Y += 2;
 
 	Vehicle = addCar(props);
 	CPController->addObjectTracker(Vehicle->getRenderObject());
+
+	Overlay = new COverlayText("asdasd", GLUT_BITMAP_HELVETICA_18, vec3(0,1,0), false);
+	//overlay->setParent(Vehicle->getRenderObject());
+	Scene->addObjectToRoot(Overlay);
 
 	// car1 - Porsche Carrera 911
 	/*CMesh* carMesh1 = new CMesh("models/cars/911.obj", "models/cars/");
@@ -372,22 +372,30 @@ void CGLUTApplication::step()
 	static clock_t start = clock();
 	static clock_t end = clock();
 	static uint current = -1;
+	static clock_t bestlap = 0;
+	static clock_t laptime = 0;
 	uint ln = CPController->getLapNum(Vehicle->getRenderObject());
 	if (current != ln)
 	{
 		end = clock();
-		printf("--- Lap time: %5.2fs\n", (end-start)/(float)CLOCKS_PER_SEC);
+		laptime = end - start;
+		if (bestlap == 0 || laptime < bestlap)
+			bestlap = laptime;
 		start = end;
-		printf("--- Lap Number: %u\n", ln);
 		current = ln;
 	}
-	/*static uint ccp = -1;
-	uint cp = CPController->getCurrentCheckpoint(Vehicle->getRenderObject());
-	if (cp != ccp)
-	{
-		printf("--- Checkpoint number: %u\n", cp);
-		ccp = cp;
-	}*/
+
+	std::ostringstream ss;
+	ss << std::endl;
+	ss << "Speed: ";
+	ss << abs(floor(Vehicle->getVehicle()->getCurrentSpeedKmHour() * 0.2f));
+	ss << " km/h" << std::endl;
+	ss << "Lap: " << ln << std::endl;
+	ss << "Checkpoints: " << CPController->getCurrentCheckpoint(Vehicle->getRenderObject()) << "/" << CPController->getNumberOfCheckpoints() << std::endl;
+	ss << "Time: " << ((clock() - start) / (float) CLOCKS_PER_SEC) << " s" << std::endl;
+	ss << "Lap time: " << (laptime / (float) CLOCKS_PER_SEC) << " s" << std::endl;
+	ss << "Best lap: " << (bestlap / (float) CLOCKS_PER_SEC) << " s" << std::endl;
+	Overlay->setText(ss.str());
 
 	if (KeyDown[27])
 		exit(0);
