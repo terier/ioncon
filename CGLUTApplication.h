@@ -10,6 +10,7 @@
 #include "CCameraFollower.h"
 #include "CCar.h"
 #include "CObjectCheckpointController.h"
+#include "COverlayText.h"
 
 struct SGLUTParameters
 {
@@ -63,6 +64,7 @@ private:
 	btClock Clock;
 	CCar* Vehicle;
 	CObject* wheel[4];
+	COverlayText* Overlay;
 
 	bool KeyDown[256];
 };
