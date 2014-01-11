@@ -30,3 +30,12 @@ vec3 createIonconVector(const btVector3& v)
 {
 	return vec3(v.x(), v.y(), v.z());
 }
+
+char* basename(const char* fname)
+{
+	char* base = strdup(fname);
+	char* s = strrchr(base, '/');
+	s++;
+	*s = '\0';
+	return base;
+}

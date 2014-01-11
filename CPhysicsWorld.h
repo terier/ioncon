@@ -17,7 +17,7 @@ public:
 	CPhysicsObject* addDynamicObject(CObject* object, btCollisionShape* shape, float mass);
 	CPhysicsObject* addConvexHullObject(CObjectMesh* object, float mass);
 	CPhysicsObject* addStaticMeshObject(CObjectMesh* object);
-	CCar* addCar(SCarProperties& props);
+	CCar* addCar(SCarProperties& props, CObject* carObject, btCollisionShape* carShape, CMesh* wheelMesh);
 
 	btConvexHullShape* generateConvexHullShape(const CMesh* mesh);
 	btBvhTriangleMeshShape* generateStaticMeshShape(const CMesh* mesh);

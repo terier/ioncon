@@ -25,4 +25,6 @@ float frandm();
 btVector3 createBulletVector(const vec3& v);
 vec3 createIonconVector(const btVector3& v);
 
+char* basename(const char* fname);
+
 #endif

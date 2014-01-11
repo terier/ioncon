@@ -8,7 +8,7 @@
 class CCar : public CPhysicsObject
 {
 public:
-	CCar(const SCarProperties& props, btVehicleRaycaster* raycaster);
+	CCar(const SCarProperties& props, btVehicleRaycaster* raycaster, CObject* chasisObject, btCollisionShape* chasisShape, CMesh* wheelMesh);
 	virtual ~CCar();
 
 	CObject* getWheelObject(int i) { return Wheel[i]; }

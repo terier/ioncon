@@ -22,7 +22,7 @@ class CMesh
 public:
 	CMesh();
 	CMesh(const CMesh& other);
-	CMesh(const char* fname, const char* base = NULL);
+	CMesh(const char* fname);
 	CMesh(CSpline* spline,
 		const PointVector& stencil,
 		int numberOfDivisions,

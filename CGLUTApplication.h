@@ -40,7 +40,7 @@ public:
 	void render();
 	void mouseMove(int x, int y);
 
-	CCar* addCar(SCarProperties& props);
+	CCar* addCar(const char* propFile);
 
 	virtual void displayFunc();
 	virtual void idleFunc();

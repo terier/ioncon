@@ -114,14 +114,17 @@
     <ClCompile Include="CCar.cpp">
       <Filter>Source Files\physics</Filter>
     </ClCompile>
-    <ClCompile Include="roadGenerator.cpp">
-      <Filter>Source Files\road</Filter>
-    </ClCompile>
     <ClCompile Include="CObjectCheckpointController.cpp">
-      <Filter>Source Files\road</Filter>
+      <Filter>Source Files\objects</Filter>
     </ClCompile>
     <ClCompile Include="COverlayText.cpp">
       <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="roadGenerator.cpp">
+      <Filter>Source Files\road</Filter>
+    </ClCompile>
+    <ClCompile Include="icc_loader.cpp">
+      <Filter>Source Files\physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -221,17 +224,17 @@
     <ClInclude Include="SCarProperties.h">
       <Filter>Header Files\physics</Filter>
     </ClInclude>
-    <ClInclude Include="SRoadProperties.h">
-      <Filter>Header Files\road</Filter>
+    <ClInclude Include="CObjectCheckpointController.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="COverlayText.h">
+      <Filter>Header Files\objects</Filter>
     </ClInclude>
     <ClInclude Include="roadGenerator.h">
       <Filter>Header Files\road</Filter>
     </ClInclude>
-    <ClInclude Include="CObjectCheckpointController.h">
-      <Filter>Header Files\road</Filter>
-    </ClInclude>
-    <ClInclude Include="COverlayText.h">
-      <Filter>Header Files\objects</Filter>
+    <ClInclude Include="icc_loader.h">
+      <Filter>Header Files\physics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

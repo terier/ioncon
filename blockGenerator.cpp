@@ -1,13 +1,12 @@
 #include "blockGenerator.h"
 #include "tiny_obj_loader.h"
 
-blockGenerator::blockGenerator(const char* startF, const char* itemF,
-								const char* endF, const char* base,
+blockGenerator::blockGenerator(const char* startF, const char* itemF, const char* endF,
 								uint startTex, uint itemTex, uint endTex)
 {
-	start = new CMesh(startF, base);
-	item = new CMesh(itemF, base);
-	end = new CMesh(endF, base);
+	start = new CMesh(startF);
+	item = new CMesh(itemF);
+	end = new CMesh(endF);
 	startT = startTex;
 	itemT = itemTex;
 	endT = endTex;

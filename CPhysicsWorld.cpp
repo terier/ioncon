@@ -77,9 +77,9 @@ CPhysicsObject* CPhysicsWorld::addStaticMeshObject(CObjectMesh* object)
 	return addDynamicObject(object, shape, 0);
 }
 
-CCar* CPhysicsWorld::addCar(SCarProperties& props)
+CCar* CPhysicsWorld::addCar(SCarProperties& props, CObject* carObject, btCollisionShape* carShape, CMesh* wheelMesh)
 {
-	CCar* car = new CCar(props, Raycaster);
+	CCar* car = new CCar(props, Raycaster, carObject, carShape, wheelMesh);
 	World->addRigidBody(car->getPhysicsObject());
 	World->addVehicle(car->getVehicle());
 	return car;

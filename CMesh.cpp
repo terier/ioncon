@@ -12,9 +12,11 @@ CMesh::CMesh(const CMesh& other)
 	generateVBO();
 }
 
-CMesh::CMesh(const char* fname, const char* base)
+CMesh::CMesh(const char* fname)
 {
+	char* base = basename(fname);
 	std::string err = LoadObj(Shapes, fname, base);
+	free(base);
 	if (!err.empty())
 		std::cout << err << "\n";
 	else

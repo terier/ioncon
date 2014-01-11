@@ -9,8 +9,7 @@ typedef std::vector<CObjectMesh*> ObjectVector;
 class blockGenerator
 {
 public:
-	blockGenerator(const char* startF, const char* itemF,
-					const char* endF, const char* base,
+	blockGenerator(const char* startF, const char* itemF, const char* endF,
 					uint startTex, uint itemTex, uint endTex);
 	virtual ~blockGenerator();
 	std::vector<CObjectMesh*> generateBlock(int w, int h, int d, vec3 bPos);

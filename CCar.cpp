@@ -1,7 +1,7 @@
 #include "CCar.h"
 
-CCar::CCar(const SCarProperties& props, btVehicleRaycaster* raycaster) :
-CPhysicsObject(props.ChasisObject, props.ChasisShape, props.Mass),
+CCar::CCar(const SCarProperties& props, btVehicleRaycaster* raycaster, CObject* chasisObject, btCollisionShape* chasisShape, CMesh* wheelMesh) :
+CPhysicsObject(chasisObject, chasisShape, props.Mass),
 	EngineForce(props.EngineForce), BrakeForce(props.BrakeForce),
 	MaxSteer(props.MaxSteer), SteerSpeed(props.SteerSpeed), Steer(0)
 {
@@ -28,7 +28,7 @@ CPhysicsObject(props.ChasisObject, props.ChasisShape, props.Mass),
 	{
 		Vehicle->getWheelInfo(i).m_rollInfluence = props.RollInfluence;
 		//Wheel[i] = scene->addObjectMesh(props.WheelMesh);
-		Wheel[i] = new CObjectMesh(props.WheelMesh);
+		Wheel[i] = new CObjectMesh(wheelMesh);
 	}
 	getPhysicsObject()->setDamping(0.2f, 0.3f);
 }

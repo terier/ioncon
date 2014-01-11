@@ -12,9 +12,6 @@ struct SCarProperties
 		EngineForce = 9.f;
 		BrakeForce = 0.2f;
 		Mass = 0.5f;
-		WheelMesh = 0;
-		ChasisObject = 0;
-		ChasisShape = 0;
 
 		SuspensionStiffness = 30.f;
 		SuspensionDamping = 20.f;
@@ -33,10 +30,6 @@ struct SCarProperties
 		SteerSpeed = 0.8f;
 	}
 
-	CObject* ChasisObject;
-	btCollisionShape* ChasisShape;
-
-	CMesh* WheelMesh;
 	vec3 WheelPositionFrontLeft;
 	vec3 WheelPositionBackRight;
 	float WheelRestLength;
