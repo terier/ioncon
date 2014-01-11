@@ -58,8 +58,9 @@ private:
 	CScene* Scene;
 	CPhysicsWorld* Physics;
 	cwc::glShaderManager* ShaderManager;
-	//CCameraFPS* Camera;
+	CCameraFPS* CameraFPS;
 	CCameraFollower* Camera;
+	CCameraFollower* CameraBumper;
 	CObjectCheckpointController* CPController;
 	btClock Clock;
 	CCar* Vehicle;

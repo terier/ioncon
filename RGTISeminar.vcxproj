@@ -78,6 +78,7 @@
     <ClCompile Include="CObjectCheckpointController.cpp" />
     <ClCompile Include="CObjectMesh.cpp" />
     <ClCompile Include="CObjectSkyDome.cpp" />
+    <ClCompile Include="COverlayText.cpp" />
     <ClCompile Include="CPhysicsObject.cpp" />
     <ClCompile Include="CPhysicsWorld.cpp" />
     <ClCompile Include="CScene.cpp" />
@@ -100,6 +101,7 @@
     <ClInclude Include="CEventReceiver.h" />
     <ClInclude Include="CObjectCheckpointController.h" />
     <ClInclude Include="CObjectSkyDome.h" />
+    <ClInclude Include="COverlayText.h" />
     <ClInclude Include="CPhysicsObject.h" />
     <ClInclude Include="CShaderCallback.h" />
     <ClInclude Include="CShaderDefaultCallback.h" />

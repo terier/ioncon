@@ -27,6 +27,8 @@ struct SCarProperties
 		WheelRestLength = 0.3f;
 		WheelRadius = 1.4f;
 
+		BumperCamera = vec3(0, 0, -5);
+
 		MaxSteer = 0.15f;
 		SteerSpeed = 0.8f;
 	}
@@ -39,6 +41,8 @@ struct SCarProperties
 	vec3 WheelPositionBackRight;
 	float WheelRestLength;
 	float WheelRadius;
+
+	vec3 BumperCamera;
 
 	float MaxSteer;
 	float SteerSpeed;

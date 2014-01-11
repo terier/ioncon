@@ -6,6 +6,9 @@ void CCamera::render()
 		recalculateProjection();
 
 	vec3 p(getPosition());
+	CObject* parent = getParent();
+	if (parent)
+		p = parent->getTransformationPointer() * p;
 	gluLookAt(p.X, p.Y, p.Z,
 		Focus.X, Focus.Y, Focus.Z,
 		0.f, 1.f, 0.f);

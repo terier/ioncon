@@ -38,8 +38,6 @@ void COverlayText::render()
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
-		int w = glutGet(GLUT_WINDOW_WIDTH);
-		int h = glutGet(GLUT_WINDOW_HEIGHT);
 		gluOrtho2D(0, 1, 0, 1);
 	}
 

@@ -120,6 +120,9 @@
     <ClCompile Include="CObjectCheckpointController.cpp">
       <Filter>Source Files\road</Filter>
     </ClCompile>
+    <ClCompile Include="COverlayText.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CMesh.h">
@@ -226,6 +229,9 @@
     </ClInclude>
     <ClInclude Include="CObjectCheckpointController.h">
       <Filter>Header Files\road</Filter>
+    </ClInclude>
+    <ClInclude Include="COverlayText.h">
+      <Filter>Header Files\objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

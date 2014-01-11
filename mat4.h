@@ -37,9 +37,9 @@ struct mat4
 	mat4& transpose();
 	mat4 getTransposed();
 
-	mat4 operator*(const mat4& m);
-	vec3 operator*(const vec3& v);
-	vec3 mulnorm(const vec3& v);
+	mat4 operator*(const mat4& m) const;
+	vec3 operator*(const vec3& v) const;
+	vec3 mulnorm(const vec3& v) const;
 
 	mat4& operator=(const mat4& m);
 	mat4& operator*=(const mat4& m);

@@ -20,6 +20,8 @@ public:
 
 	CObject* getParent() const { return Parent; }
 	vec3 getPosition() const { return Position; }
+	mat4 getAbsoluteTransformation() const;
+	vec3 getAbsolutePosition() const;
 	vec3 getRotation() const { return Rotation; }
 	uint getTexture(uint i) const { return Textures[i]; }
 	const uint* getTextures() const { return Textures; }

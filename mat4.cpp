@@ -159,7 +159,7 @@ mat4& mat4::setTo(const mat4& m)
 	return *this;
 }
 
-mat4 mat4::operator*(const mat4& m)
+mat4 mat4::operator*(const mat4& m) const
 {
 	mat4 ret(MT_NULL);
 	for (int i=0; i<4; i++)
@@ -169,7 +169,7 @@ mat4 mat4::operator*(const mat4& m)
 	return ret;
 }
 
-vec3 mat4::operator*(const vec3& v)
+vec3 mat4::operator*(const vec3& v) const
 {
 	float r[4] = {0};
 	float m[4] = {v.X, v.Y, v.Z, 1};
@@ -179,7 +179,7 @@ vec3 mat4::operator*(const vec3& v)
 	return vec3(r[0]/r[3], r[1]/r[3], r[2]/r[3]);
 }
 
-vec3 mat4::mulnorm(const vec3& v)
+vec3 mat4::mulnorm(const vec3& v) const
 {
 	float r[4] = {0};
 	float m[4] = {v.X, v.Y, v.Z, 0};

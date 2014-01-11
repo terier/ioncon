@@ -25,6 +25,19 @@ CObject::~CObject()
 		delete *it;
 }
 
+mat4 CObject::getAbsoluteTransformation() const
+{
+	if (Parent)
+		return Transformation * Parent->getAbsoluteTransformation();
+	return Transformation;
+}
+
+vec3 CObject::getAbsolutePosition() const
+{
+	mat4 tr = getAbsoluteTransformation();
+	return vec3(tr.M[12], tr.M[13], tr.M[14]);
+}
+
 void CObject::render()
 {
 	for (ObjectIter it = Children.begin(); it != Children.end(); it++)
