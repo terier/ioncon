@@ -8,18 +8,22 @@ void CSpline::addControlPoint(const SControlPoint& p)
 
 int CSpline::index(int i) const
 {
-	size_t size = Points.size();
+	int size = (int) Points.size();
 	i %= size;
 	return i < 0 ? i + size : i;
 }
 
 int CSpline::getLowIndex(float t) const
 {
+	if (t < 0)
+		t -= 1;
 	return index((int)t);
 }
 
 int CSpline::getHighIndex(float t) const
 {
+	if (t < 0)
+		t -= 1;
 	return index((int)(t+1));
 }
 

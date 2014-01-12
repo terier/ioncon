@@ -67,7 +67,26 @@ void CObjectCheckpointController::sort()
 	std::sort(Trackers.begin(), Trackers.end(), SCheckpointTrackerComparator());
 }
 
-const SCheckpointTracker& CObjectCheckpointController::getTracker(uint i)
+SCheckpointTracker* CObjectCheckpointController::getTracker(uint i)
 {
-	return Trackers[i];
+	return &Trackers[i];
+}
+
+SCheckpointTracker* CObjectCheckpointController::getTracker(CObject* object)
+{
+	for (uint i=0; i<Trackers.size(); i++)
+	{
+		if (Trackers[i].Object == object)
+			return &Trackers[i];
+	}
+	return 0;
+}
+
+SCheckpoint* CObjectCheckpointController::getCheckpoint(uint i)
+{
+	int n = getNumberOfCheckpoints();
+	i %= n;
+	if (i < 0)
+		i += n;
+	return &Checkpoints[i];
 }

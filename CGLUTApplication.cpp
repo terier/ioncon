@@ -325,6 +325,9 @@ void CGLUTApplication::step()
 		//std::ostringstream str;
 		//str << optimalSpeed;
 		//Overlays[i]->setText(str.str());
+
+		if (Vehicles[i]->getRenderObject()->getPosition().Y < -200) // magic
+			resetCar(Vehicles[i]);
 	}
 
 	std::ostringstream ss;
@@ -340,10 +343,10 @@ void CGLUTApplication::step()
 
 	CPController->sort();
 	ss << std::endl;
-	for (int i=0; i<CPController->getNumberOfTrackers(); i++)
+	for (uint i=0; i<CPController->getNumberOfTrackers(); i++)
 	{
-		const SCheckpointTracker& tracker = CPController->getTracker(i);
-		ss << (i + 1) << " - " << tracker.Name << " (L" << tracker.LapNum << " C" << tracker.CurrentCheckpoint << ")" << std::endl;
+		SCheckpointTracker* tracker = CPController->getTracker(i);
+		ss << (i + 1) << " - " << tracker->Name << " (L" << tracker->LapNum << " C" << tracker->CurrentCheckpoint << ")" << std::endl;
 	}
 
 	Overlay->setText(ss.str());
@@ -387,7 +390,8 @@ CCar* CGLUTApplication::addCar(const char* propFile)
 void CGLUTApplication::resetCar(CCar* car)
 {
 	btRigidBody* body = car->getPhysicsObject();
-	float t = Spline->getClosestPoint(car->getRenderObject()->getPosition());
+	//float t = Spline->getClosestPoint(car->getRenderObject()->getPosition());
+	float t = Spline->getClosestPoint(CPController->getCheckpoint(CPController->getCurrentCheckpoint(car->getRenderObject()) - 1)->Position);
 	mat4 basis;
 	Spline->getFrameBasis(t, basis);
 	basis.makeTransposed();

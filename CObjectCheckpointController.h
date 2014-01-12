@@ -1,5 +1,5 @@
-#ifndef COBJECT_CHECKPOINT_CONTROLLER
-#define COBJECT_CHECKPOINT_CONTROLLER
+#ifndef COBJECT_CHECKPOINT_CONTROLLER_H_INCL
+#define COBJECT_CHECKPOINT_CONTROLLER_H_INCL
 
 #include "CObject.h"
 #include <vector>
@@ -58,9 +58,15 @@ public:
 
 	void addCheckpoint(const SCheckpoint& cp);
 	void addObjectTracker(CObject* object, const std::string& name = "Default");
+
 	uint getLapNum(CObject* object);
 	uint getCurrentCheckpoint(CObject* object);
-	const SCheckpointTracker& getTracker(uint i);
+
+	SCheckpointTracker* getTracker(uint i);
+	SCheckpointTracker* getTracker(CObject* object);
+
+	SCheckpoint* getCheckpoint(uint i);
+
 	uint getNumberOfCheckpoints();
 	uint getNumberOfTrackers();
 
