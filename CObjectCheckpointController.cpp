@@ -1,13 +1,14 @@
 #include "CObjectCheckpointController.h"
+#include <algorithm>
 
 void CObjectCheckpointController::addCheckpoint(const SCheckpoint& cp)
 {
 	Checkpoints.push_back(cp);
 }
 
-void CObjectCheckpointController::addObjectTracker(CObject* object)
+void CObjectCheckpointController::addObjectTracker(CObject* object, const std::string& name)
 {
-	Trackers.push_back(SCheckpointTracker(object));
+	Trackers.push_back(SCheckpointTracker(object, name));
 }
 
 uint CObjectCheckpointController::getLapNum(CObject* object)
@@ -35,6 +36,11 @@ uint CObjectCheckpointController::getNumberOfCheckpoints()
 	return Checkpoints.size();
 }
 
+uint CObjectCheckpointController::getNumberOfTrackers()
+{
+	return Trackers.size();
+}
+
 void CObjectCheckpointController::animate(float dt)
 {
 	for (size_t i=0; i<Trackers.size(); i++)
@@ -54,4 +60,14 @@ void CObjectCheckpointController::animate(float dt)
 			}
 		}
 	}
+}
+
+void CObjectCheckpointController::sort()
+{
+	std::sort(Trackers.begin(), Trackers.end(), SCheckpointTrackerComparator());
+}
+
+const SCheckpointTracker& CObjectCheckpointController::getTracker(uint i)
+{
+	return Trackers[i];
 }
