@@ -88,6 +88,7 @@ private:
 
 	bool KeyDown[256];
 	bool KeyDownPrev[256];
+	bool isPlaying;
 };
 
 #endif

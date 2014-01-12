@@ -181,7 +181,7 @@ void CGLUTApplication::init()
 
 	CCar* car2 = addCar("models/cars/corvette.icc");
 	position.setIdentity();
-	position.setOrigin(createBulletVector(spline->getPosition(-0.2f+nControlPoints)));
+	position.setOrigin(createBulletVector(spline->getPosition(-0.2f)));
 	car2->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car2->getRenderObject())->setShader(phongShader);
 	resetCar(car2);
@@ -189,7 +189,7 @@ void CGLUTApplication::init()
 
 	CCar* car3 = addCar("models/cars/california.icc");
 	position.setIdentity();
-	position.setOrigin(createBulletVector(spline->getPosition(-0.15f+nControlPoints)));
+	position.setOrigin(createBulletVector(spline->getPosition(-0.15f)));
 	car3->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car3->getRenderObject())->setShader(phongShader);
 	resetCar(car3);
@@ -197,7 +197,7 @@ void CGLUTApplication::init()
 
 	CCar* car4 = addCar("models/cars/SL500.icc");
 	position.setIdentity();
-	position.setOrigin(createBulletVector(spline->getPosition(-0.05f+nControlPoints)));
+	position.setOrigin(createBulletVector(spline->getPosition(-0.05f)));
 	car4->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car4->getRenderObject())->setShader(phongShader);
 	resetCar(car4);
@@ -210,6 +210,13 @@ void CGLUTApplication::init()
 	// ---------------------------------------------------------------------------------------------
 
 	generateCity();
+
+	isPlaying = true;
+	step();
+	for (size_t i=0; i<Vehicles.size(); i++)
+		Vehicles[i]->updateWheelTransform();
+	step();
+	isPlaying = false;
 }
 
 
@@ -294,7 +301,8 @@ void CGLUTApplication::generateCity()
 void CGLUTApplication::step()
 {
 	float dt = getTimeStep();
-	Physics->getWorld()->stepSimulation(dt, 10);
+	if (isPlaying)
+		Physics->getWorld()->stepSimulation(dt, 10);
 	Scene->animate(dt);
 
 	if (KeyDown['1'])
@@ -303,6 +311,9 @@ void CGLUTApplication::step()
 		Scene->setActiveCamera(CameraBumper);
 	if (KeyDown['3'])
 		Scene->setActiveCamera(CameraFPS);
+
+	if (keyPressed('p'))
+		isPlaying = !isPlaying;
 
 	if (KeyDown['w'] || KeyDown['W'])
 		CameraFPS->moveForward(dt);
@@ -391,7 +402,7 @@ void CGLUTApplication::step()
 		//str << optimalSpeed;
 		//Overlays[i]->setText(str.str());
 
-		if (Vehicles[i]->getRenderObject()->getPosition().Y < -500)
+		if (Vehicles[i]->getRenderObject()->getPosition().Y < -200)
 			resetCar(Vehicles[i]);
 	}
 
@@ -419,7 +430,7 @@ void CGLUTApplication::step()
 	if (KeyDown[27])
 		exit(0);
 
-	if (keyPressed('p'))
+	if (keyPressed('P'))
 		glutFullScreenToggle();
 
 	if (keyPressed('r'))
@@ -590,21 +601,4 @@ void CGLUTApplication::specialFunc(int c, int x, int y)
 
 void CGLUTApplication::mouseFunc(int button, int state, int x, int y)
 {
-	static uint tex = 0;
-	if (tex == 0)
-		tex = Scene->loadTexture("images/steelplate.jpg");
-
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
-	{
-		//CObject* obj = new CObjectCube(1.f);
-		CObject* obj = new CObjectSphere(1.f);
-		Scene->addObjectToRoot(obj);
-		obj->setPosition(Scene->getActiveCamera()->getPosition());
-		obj->setTexture(0, tex);
-		//btCollisionShape* shp = new btBoxShape(btVector3(1,1,1));
-		btCollisionShape* shp = new btSphereShape(1.f);
-		CPhysicsObject* objP = Physics->addDynamicObject(obj, shp, 1.f);
-		objP->getPhysicsObject()->setRestitution(0.7f);
-		objP->getPhysicsObject()->setLinearVelocity(createBulletVector(Camera->getFocus() * 50.f));
-	}
 }
