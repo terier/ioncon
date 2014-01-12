@@ -409,7 +409,7 @@ void CGLUTApplication::step()
 	std::ostringstream ss;
 	ss << std::endl;
 	ss << "Speed: ";
-	ss << abs(floor(Vehicle->getVehicle()->getCurrentSpeedKmHour() * 0.2f));
+	ss << abs(floor(Vehicle->getVehicle()->getCurrentSpeedKmHour() * 0.3f));
 	ss << " km/h" << std::endl;
 	ss << "Lap: " << ln << std::endl;
 	ss << "Checkpoints: " << CPController->getCurrentCheckpoint(Vehicle->getRenderObject()) << "/" << CPController->getNumberOfCheckpoints() << std::endl;
