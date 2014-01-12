@@ -15,7 +15,7 @@
 struct SGLUTParameters
 {
 	SGLUTParameters() : WindowX(0), WindowY(0), WindowW(640), WindowH(480),
-		WindowTitle(0), DoubleBuffering(true), FSAA(false)
+		WindowTitle(0), DoubleBuffering(true), FSAA(false), car(0), skyDome(0)
 	{
 	}
 
@@ -26,6 +26,8 @@ struct SGLUTParameters
 	const char* WindowTitle;
 	bool DoubleBuffering;
 	bool FSAA;
+	char* Car;
+	char* SkyDome;
 };
 
 class CGLUTApplication : public CEventReceiver
@@ -39,6 +41,7 @@ public:
 	float getTimeStep();
 	void render();
 	void mouseMove(int x, int y);
+	void generateCity();
 
 	CCar* addCar(const char* propFile);
 
@@ -71,6 +74,9 @@ private:
 
 	COverlayText* Overlay;
 	CSpline* Spline;
+
+	char* car;
+	char* skyDome;
 
 	bool KeyDown[256];
 };
