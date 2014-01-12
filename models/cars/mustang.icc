@@ -3,7 +3,7 @@ Mass                0.65
 SuspensionDamping   20
 SuspensionStiffness 100
 FrictionSlip        3.5
-EngineForce         9
+EngineForce         10
 BrakeForce          0.22
 
 WheelPositionFrontLeft    -2.9    2.1    -4.5

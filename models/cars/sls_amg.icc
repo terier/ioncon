@@ -3,10 +3,10 @@ Mass                0.65
 SuspensionDamping   20
 SuspensionStiffness 100
 FrictionSlip        3.5
-EngineForce         9
+EngineForce         10
 BrakeForce          0.22
 
-WheelPositionFrontLeft    -2.7    2.3    -5.0
+WheelPositionFrontLeft    -2.7    2.2    -5.0
 WheelPositionBackRight    2.7    2.2    4.1
 
 CarMesh   models/cars/sls_amg.obj

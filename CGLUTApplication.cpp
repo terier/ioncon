@@ -39,6 +39,9 @@ CGLUTApplication::CGLUTApplication(const SGLUTParameters& param) :
 	else
 		glutCreateWindow("");
 
+	car = param.Car;
+	skyDome = param.SkyDome;
+
 	glewInit();
 	init();
 }
@@ -77,20 +80,19 @@ void CGLUTApplication::init()
 	CameraFPS = new CCameraFPS();
 	CameraFPS->setPosition(vec3(15,10,30));
 	CameraFPS->setSpeed(200.f);
+	CameraFPS->setFar(6000.f);
 
 	Camera = new CCameraFollower(0);
 	Camera->setDistance(20.f);
-	Camera->setDisplacement(vec3(0,8,0));
+	Camera->setDisplacement(vec3(0,12,0));
 	Camera->setViewDisplacement(vec3(0,-2,0));
-	Camera->setFar(3000.f);
 	Camera->setStiffness(50.f);
-	Camera->setSpeed(0.05f);
+	Camera->setSpeed(0.1f);
 
 	CameraBumper = new CCameraFollower(0);
 	CameraBumper->setDistance(0);
 	CameraBumper->setDisplacement(vec3(0,3,9));
 	CameraBumper->setViewDisplacement(vec3(0,0,10));
-	CameraBumper->setFar(3000.f);
 	CameraBumper->setStiffness(50.f);
 	CameraBumper->setSpeed(2.f);
 
@@ -98,11 +100,11 @@ void CGLUTApplication::init()
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, v);
 	//glLightf
 
-	Scene->setActiveCamera(Camera);
+	Scene->setActiveCamera(CameraFPS);
 	Scene->setClearColor(vec3(0.10f, 0.11f, 0.15f));
 
 	// sky box test
-	uint skytex = Scene->loadTexture("images/sky3.jpg");
+	uint skytex = Scene->loadTexture(skyDome);
 	CObjectSkyDome* sky = new CObjectSkyDome(skytex);
 	Scene->setSkyDome(sky);
 
@@ -115,7 +117,7 @@ void CGLUTApplication::init()
 	SRoadProperties roadprops;
 	loadRoadProperties("models/testroad.icr", roadprops);
 	roadprops.Subdiv = 1000;
-	spline = generateRoad(10, 1000, 500, PI * 0.1f);
+	spline = generateRoad(13, 1530, 200, PI * 0.1f);
 	//spline->makeCardinal(0.7f);
 	Spline = spline;
 	CMesh* roadMesh = new CMesh(spline, roadprops.Stencil, roadprops.Subdiv, roadprops.ScaleTexture, roadprops.ScaleStencil);
@@ -164,7 +166,8 @@ void CGLUTApplication::init()
 
 	// CARS -------------------------------------------------------------------
 
-	Vehicle = addCar("models/cars/corvette.icc");
+	float nControlPoints = (float)Spline->getNumberOfControlPoints();
+	Vehicle = addCar(car);
 	btTransform position;
 	position.setIdentity();
 	position.setOrigin(createBulletVector(spline->getPosition(0) + vec3(0,10,0)));
@@ -206,30 +209,100 @@ void CGLUTApplication::init()
 
 	// ---------------------------------------------------------------------------------------------
 
-	//test generate block
-	/*uint startTex = Scene->loadTexture("models/blockGenerator/blockStart2.png");
+	generateCity();
+
+	isPlaying = true;
+	step();
+	for (size_t i=0; i<Vehicles.size(); i++)
+		Vehicles[i]->updateWheelTransform();
+	step();
+	isPlaying = false;
+}
+
+
+void CGLUTApplication::generateCity()
+{
+	float radius = 1800;
+	float angle = 180.f*DEGTORAD;
+	float ang;
+	cwc::glShader* phongShader = ShaderManager->loadfromFile("shaders/phong.vert", "shaders/phong.frag");
+	
+	// city
+	CMesh* city = new CMesh("models/architecture/wild_town.obj");
+	CObjectMesh* cityObject = Scene->addObjectMesh(city);
+	cityObject->setPosition(vec3(0,-80,0));
+
+	// block generator
+	uint startTex = Scene->loadTexture("models/blockGenerator/blockStart2.png");
 	uint itemTex = Scene->loadTexture("models/blockGenerator/blockItem2.png");
 	blockGenerator* gener = new blockGenerator("models/blockGenerator/blockStart2.obj",
 												"models/blockGenerator/blockItem2.obj",
 												"models/blockGenerator/blockEnd2.obj",
-												"models/blockGenerator/",
 												startTex, itemTex, 0);
-	std::vector<CObjectMesh*> geneBlockObjVect = gener->generateBlock(5,9,5,vec3(-30,-20,-30));
+	ang = frandm()*angle+PI;
+	std::vector<CObjectMesh*> geneBlockObjVect = gener->generateBlock(5,9,3,vec3(cos(ang)*radius*1.1f,-30,sin(ang)*radius*1.1f));
 	for(size_t i=0; i<geneBlockObjVect.size(); i++)
-	{
 		Scene->addObjectToRoot(geneBlockObjVect[i]);
+	ang = frandm()*angle+PI;
+	geneBlockObjVect = gener->generateBlock(8,11,3,vec3(cos(ang)*radius*1.1f,-30,sin(ang)*radius*1.1f));
+	for(size_t i=0; i<geneBlockObjVect.size(); i++)
+		Scene->addObjectToRoot(geneBlockObjVect[i]);
+	ang = frandm()*angle+PI;
+	geneBlockObjVect = gener->generateBlock(5,15,3,vec3(cos(ang)*radius*1.1f,-30,sin(ang)*radius*1.1f));
+	for(size_t i=0; i<geneBlockObjVect.size(); i++)
+		Scene->addObjectToRoot(geneBlockObjVect[i]);
+	ang = frandm()*angle+PI;
+	geneBlockObjVect = gener->generateBlock(8,11,3,vec3(cos(ang)*radius*1.1f,-30,sin(ang)*radius*1.1f));
+	for(size_t i=0; i<geneBlockObjVect.size(); i++)
+		Scene->addObjectToRoot(geneBlockObjVect[i]);
+	ang = frandm()*angle+PI;
+	geneBlockObjVect = gener->generateBlock(8,18,5,vec3(cos(ang)*radius*1.1f,-30,sin(ang)*radius*1.1f));
+	for(size_t i=0; i<geneBlockObjVect.size(); i++)
+		Scene->addObjectToRoot(geneBlockObjVect[i]);
+	ang = frandm()*angle+PI;
+	geneBlockObjVect = gener->generateBlock(6,12,4,vec3(cos(ang)*radius*1.1f,-30,sin(ang)*radius*1.1f));
+	for(size_t i=0; i<geneBlockObjVect.size(); i++)
+		Scene->addObjectToRoot(geneBlockObjVect[i]);
+
+	// skyscrapers
+	CMesh* skyscraper = new CMesh("models/architecture/newYorkStyle.obj");
+	CObjectMesh* tempSkyscraper;
+	for(int i=0; i<10; i++) {
+		ang = frandm()*angle+PI;
+		tempSkyscraper = Scene->addObjectMesh(skyscraper);
+		tempSkyscraper->setPosition(vec3(cos(ang)*radius*1.3f,-30,sin(ang)*radius*1.4f));
+		tempSkyscraper->setRotation(vec3(0, frand() * 2 * PI, 0));
+		tempSkyscraper->setShader(phongShader);
 	}
-	geneBlockObjVect = gener->generateBlock(8,11,5,vec3(-30,-20,100));
-	for(size_t i=0; i<geneBlockObjVect.size(); i++)
-	{
-		Scene->addObjectToRoot(geneBlockObjVect[i]);
-	}*/
+
+	// business block
+	CMesh* businessBlock = new CMesh("models/architecture/businessBlock.obj");
+	CObjectMesh* tempBusinessBlock;
+	for(int i=0; i<10; i++) {
+		ang = frandm()*angle+PI;
+		tempBusinessBlock = Scene->addObjectMesh(businessBlock);
+		tempBusinessBlock->setPosition(vec3(cos(ang)*radius*1.1f,-30,sin(ang)*radius*1.2f));
+		tempBusinessBlock->setRotation(vec3(0, -ang-PI2, 0));
+		tempBusinessBlock->setShader(phongShader);
+	}
+
+	// big house
+	CMesh* bigHouse = new CMesh("models/architecture/bigHouse.obj");
+	CObjectMesh* tempBigHouse;
+	for(int i=0; i<10; i++) {
+		ang = frandm()*angle+PI;
+		tempBigHouse = Scene->addObjectMesh(bigHouse);
+		tempBigHouse->setPosition(vec3(cos(ang)*radius,-15,sin(ang)*radius));
+		tempBigHouse->setRotation(vec3(0, -ang-PI2, 0));
+		tempBigHouse->setShader(phongShader);
+	}
 }
 
 void CGLUTApplication::step()
 {
 	float dt = getTimeStep();
-	Physics->getWorld()->stepSimulation(dt, 10);
+	if (isPlaying)
+		Physics->getWorld()->stepSimulation(dt, 10);
 	Scene->animate(dt);
 
 	if (KeyDown['1'])
@@ -238,6 +311,14 @@ void CGLUTApplication::step()
 		Scene->setActiveCamera(CameraBumper);
 	if (KeyDown['3'])
 		Scene->setActiveCamera(CameraFPS);
+
+	if (keyPressed('p')) {
+		isPlaying = !isPlaying;
+		if(isPlaying)
+			Timer.start();
+		else
+			Timer.stop();
+	}
 
 	if (KeyDown['w'] || KeyDown['W'])
 		CameraFPS->moveForward(dt);
@@ -274,19 +355,16 @@ void CGLUTApplication::step()
 		Vehicle->brakeRelease();
 
 	// checkpoint test
-	static clock_t start = clock();
-	static clock_t end = clock();
 	static uint current = -1;
-	static clock_t bestlap = 0;
-	static clock_t laptime = 0;
+	static float bestlap = 0;
+	static float laptime = 0;
 	uint ln = CPController->getLapNum(Vehicle->getRenderObject());
 	if (current != ln)
 	{
-		end = clock();
-		laptime = end - start;
+		laptime = Timer.getTimeSeconds();
+		Timer.reset();
 		if (bestlap == 0 || laptime < bestlap)
 			bestlap = laptime;
-		start = end;
 		current = ln;
 	}
 
@@ -333,13 +411,13 @@ void CGLUTApplication::step()
 	std::ostringstream ss;
 	ss << std::endl;
 	ss << "Speed: ";
-	ss << abs(floor(Vehicle->getVehicle()->getCurrentSpeedKmHour() * 0.2f));
+	ss << abs(floor(Vehicle->getVehicle()->getCurrentSpeedKmHour() * 0.3f));
 	ss << " km/h" << std::endl;
 	ss << "Lap: " << ln << std::endl;
 	ss << "Checkpoints: " << CPController->getCurrentCheckpoint(Vehicle->getRenderObject()) << "/" << CPController->getNumberOfCheckpoints() << std::endl;
-	ss << "Time: " << ((clock() - start) / (float) CLOCKS_PER_SEC) << " s" << std::endl;
-	ss << "Lap time: " << (laptime / (float) CLOCKS_PER_SEC) << " s" << std::endl;
-	ss << "Best lap: " << (bestlap / (float) CLOCKS_PER_SEC) << " s" << std::endl;
+	ss << "Time: " << (Timer.getTimeSeconds()) << " s" << std::endl;
+	ss << "Lap time: " << (laptime) << " s" << std::endl;
+	ss << "Best lap: " << (bestlap) << " s" << std::endl;
 
 	CPController->sort();
 	ss << std::endl;
@@ -354,7 +432,7 @@ void CGLUTApplication::step()
 	if (KeyDown[27])
 		exit(0);
 
-	if (keyPressed('p'))
+	if (keyPressed('P'))
 		glutFullScreenToggle();
 
 	if (keyPressed('r'))
@@ -526,21 +604,4 @@ void CGLUTApplication::specialFunc(int c, int x, int y)
 
 void CGLUTApplication::mouseFunc(int button, int state, int x, int y)
 {
-	static uint tex = 0;
-	if (tex == 0)
-		tex = Scene->loadTexture("images/steelplate.jpg");
-
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
-	{
-		//CObject* obj = new CObjectCube(1.f);
-		CObject* obj = new CObjectSphere(1.f);
-		Scene->addObjectToRoot(obj);
-		obj->setPosition(Scene->getActiveCamera()->getPosition());
-		obj->setTexture(0, tex);
-		//btCollisionShape* shp = new btBoxShape(btVector3(1,1,1));
-		btCollisionShape* shp = new btSphereShape(1.f);
-		CPhysicsObject* objP = Physics->addDynamicObject(obj, shp, 1.f);
-		objP->getPhysicsObject()->setRestitution(0.7f);
-		objP->getPhysicsObject()->setLinearVelocity(createBulletVector(Camera->getFocus() * 50.f));
-	}
 }

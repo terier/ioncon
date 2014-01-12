@@ -29,7 +29,7 @@ std::vector<CObjectMesh*> blockGenerator::generateBlock(int w, int h, int d, vec
 	{
 		for(int i=0; i<w; i++)
 		{
-			basePos = bPos + vec3(k*10.0f, 0, i*10.0f);
+			basePos = bPos + vec3(k*20.0f, 0, i*20.0f);
 			//create base object
 			CObjectMesh* startObjMesh = new CObjectMesh(start);
 			startObjMesh->setTexture(0, startT);
@@ -45,9 +45,9 @@ std::vector<CObjectMesh*> blockGenerator::generateBlock(int w, int h, int d, vec
 				{
 					//printf("Generating main part...\n");
 					if(j==0)
-						curPos = prevPos + vec3(0,10.0f,0);
+						curPos = prevPos + vec3(0,20.0f,0);
 					else
-						curPos = prevPos + vec3(0,6.75f,0);
+						curPos = prevPos + vec3(0,13.5f,0);
 					CObjectMesh* tempObj = new CObjectMesh(item);
 					tempObj->setTexture(0, itemT);
 					tempObj->setPosition(curPos);
@@ -58,12 +58,12 @@ std::vector<CObjectMesh*> blockGenerator::generateBlock(int w, int h, int d, vec
 			}
 			else
 			{
-				prevPos = prevPos + vec3(0,10.0f,0) + vec3(0,(h-1)*6.75f,0); //fix position
+				prevPos = prevPos + vec3(0,20.0f,0) + vec3(0,(h-1)*13.5f,0); //fix position
 			}
 
 			//append end part
 			CObjectMesh* endObj = new CObjectMesh(end);
-			endObj->setPosition(prevPos + vec3(0,6.75f,0));
+			endObj->setPosition(prevPos + vec3(0,13.5f,0));
 			finalObjectVect.push_back(endObj);
 		}
 	}
