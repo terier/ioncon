@@ -84,7 +84,7 @@ void CGLUTApplication::init()
 
 	Camera = new CCameraFollower(0);
 	Camera->setDistance(20.f);
-	Camera->setDisplacement(vec3(0,10,0));
+	Camera->setDisplacement(vec3(0,12,0));
 	Camera->setViewDisplacement(vec3(0,-2,0));
 	Camera->setStiffness(50.f);
 	Camera->setSpeed(0.1f);
@@ -100,7 +100,7 @@ void CGLUTApplication::init()
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, v);
 	//glLightf
 
-	Scene->setActiveCamera(Camera);
+	Scene->setActiveCamera(CameraFPS);
 	Scene->setClearColor(vec3(0.10f, 0.11f, 0.15f));
 
 	// sky box test
@@ -166,6 +166,7 @@ void CGLUTApplication::init()
 
 	// CARS -------------------------------------------------------------------
 
+	float nControlPoints = (float)Spline->getNumberOfControlPoints();
 	Vehicle = addCar(car);
 	btTransform position;
 	position.setIdentity();
@@ -180,7 +181,7 @@ void CGLUTApplication::init()
 
 	CCar* car2 = addCar("models/cars/corvette.icc");
 	position.setIdentity();
-	position.setOrigin(createBulletVector(spline->getPosition(-0.2f)));
+	position.setOrigin(createBulletVector(spline->getPosition(-0.2f+nControlPoints)));
 	car2->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car2->getRenderObject())->setShader(phongShader);
 	resetCar(car2);
@@ -188,7 +189,7 @@ void CGLUTApplication::init()
 
 	CCar* car3 = addCar("models/cars/california.icc");
 	position.setIdentity();
-	position.setOrigin(createBulletVector(spline->getPosition(-0.15f)));
+	position.setOrigin(createBulletVector(spline->getPosition(-0.15f+nControlPoints)));
 	car3->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car3->getRenderObject())->setShader(phongShader);
 	resetCar(car3);
@@ -196,7 +197,7 @@ void CGLUTApplication::init()
 
 	CCar* car4 = addCar("models/cars/SL500.icc");
 	position.setIdentity();
-	position.setOrigin(createBulletVector(spline->getPosition(-0.05f)));
+	position.setOrigin(createBulletVector(spline->getPosition(-0.05f+nControlPoints)));
 	car4->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car4->getRenderObject())->setShader(phongShader);
 	resetCar(car4);
@@ -220,7 +221,7 @@ void CGLUTApplication::generateCity()
 	cwc::glShader* phongShader = ShaderManager->loadfromFile("shaders/phong.vert", "shaders/phong.frag");
 	
 	// city
-	CMesh* city = new CMesh("models/architecture/newYorkStyle.obj");
+	CMesh* city = new CMesh("models/architecture/wild_town.obj");
 	CObjectMesh* cityObject = Scene->addObjectMesh(city);
 	cityObject->setPosition(vec3(0,-80,0));
 
@@ -389,6 +390,9 @@ void CGLUTApplication::step()
 		//std::ostringstream str;
 		//str << optimalSpeed;
 		//Overlays[i]->setText(str.str());
+
+		if (Vehicles[i]->getRenderObject()->getPosition().Y < -500)
+			resetCar(Vehicles[i]);
 	}
 
 	std::ostringstream ss;

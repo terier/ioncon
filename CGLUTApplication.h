@@ -15,7 +15,7 @@
 struct SGLUTParameters
 {
 	SGLUTParameters() : WindowX(0), WindowY(0), WindowW(640), WindowH(480),
-		WindowTitle(0), DoubleBuffering(true), FSAA(false), car(0), skyDome(0)
+		WindowTitle(0), DoubleBuffering(true), FSAA(false), Car(0), SkyDome(0)
 	{
 	}
 

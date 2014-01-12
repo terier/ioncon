@@ -32,10 +32,10 @@ int main(int argc, char **argv)
 	param.WindowTitle = "IonCon 0.1";
 	printf("Enter the number of desired sky dome (0-3): ");
 	scanf("%d", &skyDome);
-	param.skyDome = skyDomes[skyDome];
+	param.SkyDome = skyDomes[skyDome];
 	printf("\nEnter the number of desired car:\n0: Corvette, 1: California, 2: 911,\n3: Carrera GT, 4: Mustang, 5: SL500, 6: SLS AMG;\n");
 	scanf("%d", &car);
-	param.car = cars[car];
+	param.Car = cars[car];
 
 	CGLUTApplication app(param);
 	CGLUTInterface::connect(&app);
