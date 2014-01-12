@@ -83,6 +83,14 @@ void CGLUTApplication::init()
 	Camera->setStiffness(50.f);
 	Camera->setSpeed(0.05f);
 
+	CameraBumper = new CCameraFollower(0);
+	CameraBumper->setDistance(0);
+	CameraBumper->setDisplacement(vec3(0,3,9));
+	CameraBumper->setViewDisplacement(vec3(0,0,10));
+	CameraBumper->setFar(3000.f);
+	CameraBumper->setStiffness(50.f);
+	CameraBumper->setSpeed(2.f);
+
 	float v[4] = {1,1,1,1};
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, v);
 	//glLightf
@@ -148,12 +156,12 @@ void CGLUTApplication::init()
 
 	CObject* redSphere = new CObjectMesh(new CMesh("models/startflag.obj"));
 	redSphere->setPosition(spline->getPosition(0) + vec3(0,15,0));
-	redSphere->setTexture(0, Scene->loadTexture("images/startflag.png"));
+	redSphere->setTexture(0, Scene->loadTexture("images/startflag.png", true));
 	Scene->addObjectToRoot(redSphere);
 
 	// CARS -------------------------------------------------------------------
 
-	Vehicle = addCar("models/cars/mustang.icc");
+	Vehicle = addCar("models/cars/corvette.icc");
 	btTransform position;
 	position.setIdentity();
 	position.setOrigin(createBulletVector(spline->getPosition(0) + vec3(0,10,0)));
@@ -162,6 +170,7 @@ void CGLUTApplication::init()
 	cwc::glShader* phongShader = ShaderManager->loadfromFile("shaders/phong.vert", "shaders/phong.frag");
 	((CObjectMesh*)Vehicle->getRenderObject())->setShader(phongShader);
 	Camera->setFollowedObject(Vehicle->getRenderObject());
+	CameraBumper->setFollowedObject(Vehicle->getRenderObject());
 	CPController->addObjectTracker(Vehicle->getRenderObject());
 
 	CCar* car2 = addCar("models/cars/corvette.icc");
@@ -217,6 +226,8 @@ void CGLUTApplication::step()
 	if (KeyDown['1'])
 		Scene->setActiveCamera(Camera);
 	if (KeyDown['2'])
+		Scene->setActiveCamera(CameraBumper);
+	if (KeyDown['3'])
 		Scene->setActiveCamera(CameraFPS);
 
 	if (KeyDown['w'] || KeyDown['W'])
