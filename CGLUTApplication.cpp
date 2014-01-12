@@ -153,7 +153,7 @@ void CGLUTApplication::init()
 
 	// CARS -------------------------------------------------------------------
 
-	Vehicle = addCar("models/california.icc");
+	Vehicle = addCar("models/cars/mustang.icc");
 	btTransform position;
 	position.setIdentity();
 	position.setOrigin(createBulletVector(spline->getPosition(0) + vec3(0,10,0)));
@@ -164,19 +164,19 @@ void CGLUTApplication::init()
 	Camera->setFollowedObject(Vehicle->getRenderObject());
 	CPController->addObjectTracker(Vehicle->getRenderObject());
 
-	CCar* car2 = addCar("models/corvette.icc");
+	CCar* car2 = addCar("models/cars/corvette.icc");
 	position.setIdentity();
 	position.setOrigin(createBulletVector(spline->getPosition(0.2f) + vec3(0,10,0)));
 	car2->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car2->getRenderObject())->setShader(phongShader);
 
-	CCar* car3 = addCar("models/california.icc");
+	CCar* car3 = addCar("models/cars/california.icc");
 	position.setIdentity();
 	position.setOrigin(createBulletVector(spline->getPosition(0.15f) + vec3(0,10,0)));
 	car3->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car3->getRenderObject())->setShader(phongShader);
 
-	CCar* car4 = addCar("models/SL500.icc");
+	CCar* car4 = addCar("models/cars/SL500.icc");
 	position.setIdentity();
 	position.setOrigin(createBulletVector(spline->getPosition(0.05f) + vec3(0,10,0)));
 	car4->getPhysicsObject()->setCenterOfMassTransform(position);

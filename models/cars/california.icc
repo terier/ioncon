@@ -1,0 +1,14 @@
+MaxSteer            0.2
+Mass                0.65
+SuspensionDamping   20
+SuspensionStiffness 100
+FrictionSlip        3.5
+EngineForce         9
+BrakeForce          0.22
+
+WheelPositionFrontLeft    -2.9   2.2     -5.7
+WheelPositionBackRight    2.9    2.2     4.2
+
+CarMesh   models/cars/california.obj
+HullMesh  models/cars/california_hull.obj
+WheelMesh models/cars/california_wheel.obj

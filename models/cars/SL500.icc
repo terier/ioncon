@@ -1,0 +1,14 @@
+MaxSteer            0.2
+Mass                0.65
+SuspensionDamping   20
+SuspensionStiffness 100
+FrictionSlip        3.5
+EngineForce         9
+BrakeForce          0.22
+
+WheelPositionFrontLeft    -2.8   2.2     -4.5
+WheelPositionBackRight    2.8    2.2     4.8
+
+CarMesh   models/cars/SL500.obj
+HullMesh  models/cars/SL500_hull.obj
+WheelMesh models/cars/SL500_wheel.obj
