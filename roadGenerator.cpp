@@ -17,7 +17,7 @@ CSpline* generateRoad(int numControlPoints, float radius, float radiusJitter, fl
 		float zdirphi = frand() * PI * 0.05f;
 		vec3 dir(cos(dirphi) * cos(zdirphi), sin(zdirphi), sin(dirphi) * cos(zdirphi));
 		//vec3 dir(cos(dirphi) * cos(zdirphi), 0, sin(dirphi) * cos(zdirphi));
-		dir *= radius * 0.5;
+		dir *= radius * 0.5f;
 
 		float g1, g2; // two random angles for random curvature vector
 		g1 = frand() * 2 * PI;

@@ -31,6 +31,14 @@ vec3 createIonconVector(const btVector3& v)
 	return vec3(v.x(), v.y(), v.z());
 }
 
+mat4 getOpenGLMatrixFromFrameBasis(const mat4& m)
+{
+	mat4 basis(m);
+	basis.makeTransposed();
+	basis.setRow(0, basis.getRow(0) * (-1));
+	return basis;
+}
+
 char* basename(const char* fname)
 {
 	char* base = strdup(fname);

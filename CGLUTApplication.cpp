@@ -87,14 +87,14 @@ void CGLUTApplication::init()
 	Camera->setDisplacement(vec3(0,12,0));
 	Camera->setViewDisplacement(vec3(0,-2,0));
 	Camera->setStiffness(50.f);
-	Camera->setSpeed(0.1f);
+	Camera->setSpeed(0.4f);
 
 	CameraBumper = new CCameraFollower(0);
 	CameraBumper->setDistance(0);
-	CameraBumper->setDisplacement(vec3(0,3,9));
+	CameraBumper->setDisplacement(vec3(0,3,9.5f));
 	CameraBumper->setViewDisplacement(vec3(0,0,10));
 	CameraBumper->setStiffness(50.f);
-	CameraBumper->setSpeed(2.f);
+	CameraBumper->setSpeed(3.f);
 
 	float v[4] = {1,1,1,1};
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, v);
@@ -143,9 +143,7 @@ void CGLUTApplication::init()
 	mat4 basis;
 	for (float t=0; t<tend; t+=dt)
 	{
-		spline->getFrameBasis(t, basis);
-		float displace = 28;
-		basis.addColumn(3, basis.getColumn(0) * displace);
+		spline->getFrameBasisFromStencil(t, basis, vec3(28, 7, 0));
 		CObject* lamp = Scene->addObjectMesh(lampMesh);
 		lamp->setTransformation(basis.getTransposed());
 	}
@@ -168,11 +166,6 @@ void CGLUTApplication::init()
 
 	float nControlPoints = (float)Spline->getNumberOfControlPoints();
 	Vehicle = addCar(car);
-	btTransform position;
-	position.setIdentity();
-	position.setOrigin(createBulletVector(spline->getPosition(0) + vec3(0,10,0)));
-	//Vehicle->setWorldTransform(position);
-	Vehicle->getPhysicsObject()->setCenterOfMassTransform(position);
 	cwc::glShader* phongShader = ShaderManager->loadfromFile("shaders/phong.vert", "shaders/phong.frag");
 	((CObjectMesh*)Vehicle->getRenderObject())->setShader(phongShader);
 	Camera->setFollowedObject(Vehicle->getRenderObject());
@@ -180,32 +173,41 @@ void CGLUTApplication::init()
 	CPController->addObjectTracker(Vehicle->getRenderObject(), "Player");
 
 	CCar* car2 = addCar("models/cars/corvette.icc");
-	position.setIdentity();
-	position.setOrigin(createBulletVector(spline->getPosition(-0.2f)));
-	car2->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car2->getRenderObject())->setShader(phongShader);
-	resetCar(car2);
 	CPController->addObjectTracker(car2->getRenderObject(), "Corvette");
 
 	CCar* car3 = addCar("models/cars/california.icc");
-	position.setIdentity();
-	position.setOrigin(createBulletVector(spline->getPosition(-0.15f)));
-	car3->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car3->getRenderObject())->setShader(phongShader);
-	resetCar(car3);
 	CPController->addObjectTracker(car3->getRenderObject(), "California");
 
 	CCar* car4 = addCar("models/cars/SL500.icc");
-	position.setIdentity();
-	position.setOrigin(createBulletVector(spline->getPosition(-0.05f)));
-	car4->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car4->getRenderObject())->setShader(phongShader);
-	resetCar(car4);
 	CPController->addObjectTracker(car4->getRenderObject(), "SL500");
 
 	Overlay = new COverlayText("", GLUT_BITMAP_HELVETICA_18, vec3(0,1,0), false);
 	//overlay->setParent(Vehicle->getRenderObject());
 	Scene->addObjectToRoot(Overlay);
+
+	bool placeLeft = true; // altering left - right
+	btTransform position;
+	float startPoint = 0;
+	for (size_t i=0; i<Vehicles.size(); i++)
+	{
+		mat4 trans;
+		placeLeft = !placeLeft;
+		if (placeLeft)
+		{
+			Spline->getFrameBasisFromStencil(startPoint, trans, vec3(10, 5, 0));
+			startPoint -= 20.f / Spline->getDerivative(startPoint).len();
+		}
+		else
+		{
+			Spline->getFrameBasisFromStencil(startPoint, trans, vec3(-10, 5, 0));
+		}
+		trans = getOpenGLMatrixFromFrameBasis(trans);
+		position.setFromOpenGLMatrix(trans.M);
+		Vehicles[i]->getPhysicsObject()->setWorldTransform(position);
+	}
 
 	// ---------------------------------------------------------------------------------------------
 
@@ -472,9 +474,8 @@ void CGLUTApplication::resetCar(CCar* car)
 	float t = Spline->getClosestPoint(CPController->getCheckpoint(CPController->getCurrentCheckpoint(car->getRenderObject()) - 1)->Position);
 	mat4 basis;
 	Spline->getFrameBasis(t, basis);
-	basis.makeTransposed();
-	basis.addRow(3, vec3(0,3,0));
-	basis.setRow(0, basis.getRow(0) * (-1));
+	Spline->getFrameBasisFromStencil(t, basis, vec3(0,3,0));
+	basis = getOpenGLMatrixFromFrameBasis(basis);
 
 	btTransform trans;
 	trans.setFromOpenGLMatrix(basis.M);

@@ -15,20 +15,25 @@ int CSpline::index(int i) const
 
 int CSpline::getLowIndex(float t) const
 {
+	t = fmod(t, (float) getNumberOfControlPoints());
 	if (t < 0)
-		t -= 1;
+		t += (float) getNumberOfControlPoints();
 	return index((int)t);
 }
 
 int CSpline::getHighIndex(float t) const
 {
+	t = fmod(t, (float) getNumberOfControlPoints());
 	if (t < 0)
-		t -= 1;
+		t += (float) getNumberOfControlPoints();
 	return index((int)(t+1));
 }
 
 vec3 CSpline::getPosition(float t) const
 {
+	t = fmod(t, (float) getNumberOfControlPoints());
+	if (t < 0)
+		t += (float) getNumberOfControlPoints();
 	const SControlPoint& p0 = Points[getLowIndex(t)];
 	const SControlPoint& p1 = Points[getHighIndex(t)];
 
@@ -49,6 +54,9 @@ vec3 CSpline::getPosition(float t) const
 
 vec3 CSpline::getDerivative(float t) const
 {
+	t = fmod(t, (float) getNumberOfControlPoints());
+	if (t < 0)
+		t += (float) getNumberOfControlPoints();
 	const SControlPoint& p0 = Points[getLowIndex(t)];
 	const SControlPoint& p1 = Points[getHighIndex(t)];
 
@@ -68,6 +76,9 @@ vec3 CSpline::getDerivative(float t) const
 
 vec3 CSpline::getSecondDerivative(float t) const
 {
+	t = fmod(t, (float) getNumberOfControlPoints());
+	if (t < 0)
+		t += (float) getNumberOfControlPoints();
 	const SControlPoint& p0 = Points[getLowIndex(t)];
 	const SControlPoint& p1 = Points[getHighIndex(t)];
 
@@ -101,6 +112,9 @@ vec3 CSpline::getBinormal(float t) const
 
 vec3 CSpline::getUpVector(float t) const
 {
+	t = fmod(t, (float) getNumberOfControlPoints());
+	if (t < 0)
+		t += (float) getNumberOfControlPoints();
 	int i1 = index((int)t);
 	int i2 = index(i1+1);
 	int i3 = index(i2+1);
@@ -139,6 +153,14 @@ void CSpline::getFrameBasis(float t, mat4& result) const
 	result.setColumn(3, P);
 	result.setRow(3, vec3());
 	result.M[15] = 1;
+}
+
+void CSpline::getFrameBasisFromStencil(float t, mat4& result, const vec3& p) const
+{
+	getFrameBasis(t, result);
+	result.addColumn(3, result.getColumn(0) * p.X);
+	result.addColumn(3, result.getColumn(1) * p.Y);
+	result.addColumn(3, result.getColumn(2) * p.Z);
 }
 
 void CSpline::makeCardinal(float c)
@@ -181,22 +203,6 @@ float CSpline::getClosestPoint(const vec3& v) const
 	float t = tmin;
 	float dist1, dist2, dist3;
 	float d1, d2, grad, curv;
-	float t1, t2, t3;
-
-	// refine with quadratic minimization
-	/*for (int i=0; i<4; i++)
-	{
-		t1 = t - eps;
-		t2 = t;
-		t3 = t + eps;
-		dist1 = (getPosition(t1) - v).lensq();
-		dist2 = (getPosition(t2) - v).lensq();
-		dist3 = (getPosition(t3) - v).lensq();
-		d1 = (dist2 - dist1) / eps;
-		d2 = (dist3 - dist2) / eps;
-		t = 0.5f * ((t2*t2-t3*t3)*dist1 + (t3*t3-t1*t1)*dist1 + (t1*t1-t2*t2)*dist3) /
-			((t2-t3)*dist1 + (t3-t1)*dist2 + (t1-t2)*dist3);
-	}*/
 
 	// refine with newton's method
 	for (int i=0; i<4; i++)

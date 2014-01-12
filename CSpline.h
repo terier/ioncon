@@ -13,7 +13,7 @@ class CSpline
 public:
 	void addControlPoint(const SControlPoint& p);
 
-	int getNumberOfControlPoints() { return (int) Points.size(); }
+	int getNumberOfControlPoints() const { return (int) Points.size(); }
 
 	vec3 getPosition(float t) const;
 	vec3 getDerivative(float t) const;
@@ -30,6 +30,7 @@ public:
 
 	// transformation from stencil to UDS frame
 	void getFrameBasis(float t, mat4& result) const;
+	void getFrameBasisFromStencil(float t, mat4& result, const vec3& p) const;
 
 	void makeCardinal(float c);
 	void makeCatmullRom();
