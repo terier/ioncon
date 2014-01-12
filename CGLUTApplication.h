@@ -11,6 +11,7 @@
 #include "CCar.h"
 #include "CObjectCheckpointController.h"
 #include "COverlayText.h"
+#include "CTimer.h"
 
 struct SGLUTParameters
 {
@@ -70,6 +71,7 @@ private:
 	CPhysicsWorld* Physics;
 	cwc::glShaderManager* ShaderManager;
 	btClock Clock;
+	CTimer Timer;
 	CObjectCheckpointController* CPController;
 
 	CCameraFPS* CameraFPS;

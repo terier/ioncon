@@ -312,8 +312,13 @@ void CGLUTApplication::step()
 	if (KeyDown['3'])
 		Scene->setActiveCamera(CameraFPS);
 
-	if (keyPressed('p'))
+	if (keyPressed('p')) {
 		isPlaying = !isPlaying;
+		if(isPlaying)
+			Timer.start();
+		else
+			Timer.stop();
+	}
 
 	if (KeyDown['w'] || KeyDown['W'])
 		CameraFPS->moveForward(dt);
@@ -350,19 +355,16 @@ void CGLUTApplication::step()
 		Vehicle->brakeRelease();
 
 	// checkpoint test
-	static clock_t start = clock();
-	static clock_t end = clock();
 	static uint current = -1;
-	static clock_t bestlap = 0;
-	static clock_t laptime = 0;
+	static float bestlap = 0;
+	static float laptime = 0;
 	uint ln = CPController->getLapNum(Vehicle->getRenderObject());
 	if (current != ln)
 	{
-		end = clock();
-		laptime = end - start;
+		laptime = Timer.getTimeSeconds();
+		Timer.reset();
 		if (bestlap == 0 || laptime < bestlap)
 			bestlap = laptime;
-		start = end;
 		current = ln;
 	}
 
@@ -413,9 +415,9 @@ void CGLUTApplication::step()
 	ss << " km/h" << std::endl;
 	ss << "Lap: " << ln << std::endl;
 	ss << "Checkpoints: " << CPController->getCurrentCheckpoint(Vehicle->getRenderObject()) << "/" << CPController->getNumberOfCheckpoints() << std::endl;
-	ss << "Time: " << ((clock() - start) / (float) CLOCKS_PER_SEC) << " s" << std::endl;
-	ss << "Lap time: " << (laptime / (float) CLOCKS_PER_SEC) << " s" << std::endl;
-	ss << "Best lap: " << (bestlap / (float) CLOCKS_PER_SEC) << " s" << std::endl;
+	ss << "Time: " << (Timer.getTimeSeconds()) << " s" << std::endl;
+	ss << "Lap time: " << (laptime) << " s" << std::endl;
+	ss << "Best lap: " << (bestlap) << " s" << std::endl;
 
 	CPController->sort();
 	ss << std::endl;
