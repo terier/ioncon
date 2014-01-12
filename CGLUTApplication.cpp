@@ -66,7 +66,10 @@ void CGLUTApplication::init()
 	glutWarpPointer(100,100);
 
 	for (int i=0; i<256; i++)
+	{
 		KeyDown[i] = false;
+		KeyDownPrev[i] = false;
+	}
 
 	Scene = new CScene();
 	Physics = new CPhysicsWorld();
@@ -171,25 +174,31 @@ void CGLUTApplication::init()
 	((CObjectMesh*)Vehicle->getRenderObject())->setShader(phongShader);
 	Camera->setFollowedObject(Vehicle->getRenderObject());
 	CameraBumper->setFollowedObject(Vehicle->getRenderObject());
-	CPController->addObjectTracker(Vehicle->getRenderObject());
+	CPController->addObjectTracker(Vehicle->getRenderObject(), "Player");
 
 	CCar* car2 = addCar("models/cars/corvette.icc");
 	position.setIdentity();
-	position.setOrigin(createBulletVector(spline->getPosition(0.2f) + vec3(0,10,0)));
+	position.setOrigin(createBulletVector(spline->getPosition(-0.2f)));
 	car2->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car2->getRenderObject())->setShader(phongShader);
+	resetCar(car2);
+	CPController->addObjectTracker(car2->getRenderObject(), "Corvette");
 
 	CCar* car3 = addCar("models/cars/california.icc");
 	position.setIdentity();
-	position.setOrigin(createBulletVector(spline->getPosition(0.15f) + vec3(0,10,0)));
+	position.setOrigin(createBulletVector(spline->getPosition(-0.15f)));
 	car3->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car3->getRenderObject())->setShader(phongShader);
+	resetCar(car3);
+	CPController->addObjectTracker(car3->getRenderObject(), "California");
 
 	CCar* car4 = addCar("models/cars/SL500.icc");
 	position.setIdentity();
-	position.setOrigin(createBulletVector(spline->getPosition(0.05f) + vec3(0,10,0)));
+	position.setOrigin(createBulletVector(spline->getPosition(-0.05f)));
 	car4->getPhysicsObject()->setCenterOfMassTransform(position);
 	((CObjectMesh*)car4->getRenderObject())->setShader(phongShader);
+	resetCar(car4);
+	CPController->addObjectTracker(car4->getRenderObject(), "SL500");
 
 	Overlay = new COverlayText("", GLUT_BITMAP_HELVETICA_18, vec3(0,1,0), false);
 	//overlay->setParent(Vehicle->getRenderObject());
@@ -328,13 +337,27 @@ void CGLUTApplication::step()
 	ss << "Time: " << ((clock() - start) / (float) CLOCKS_PER_SEC) << " s" << std::endl;
 	ss << "Lap time: " << (laptime / (float) CLOCKS_PER_SEC) << " s" << std::endl;
 	ss << "Best lap: " << (bestlap / (float) CLOCKS_PER_SEC) << " s" << std::endl;
+
+	CPController->sort();
+	ss << std::endl;
+	for (int i=0; i<CPController->getNumberOfTrackers(); i++)
+	{
+		const SCheckpointTracker& tracker = CPController->getTracker(i);
+		ss << (i + 1) << " - " << tracker.Name << " (L" << tracker.LapNum << " C" << tracker.CurrentCheckpoint << ")" << std::endl;
+	}
+
 	Overlay->setText(ss.str());
 
 	if (KeyDown[27])
 		exit(0);
 
-	if (KeyDown['p'])
+	if (keyPressed('p'))
 		glutFullScreenToggle();
+
+	if (keyPressed('r'))
+		resetCar(Vehicle);
+
+	updateKeyStrokes();
 }
 
 CCar* CGLUTApplication::addCar(const char* propFile)
@@ -359,6 +382,23 @@ CCar* CGLUTApplication::addCar(const char* propFile)
 	over->setParent(carObject);
 	Overlays.push_back(over);
 	return car;
+}
+
+void CGLUTApplication::resetCar(CCar* car)
+{
+	btRigidBody* body = car->getPhysicsObject();
+	float t = Spline->getClosestPoint(car->getRenderObject()->getPosition());
+	mat4 basis;
+	Spline->getFrameBasis(t, basis);
+	basis.makeTransposed();
+	basis.addRow(3, vec3(0,3,0));
+	basis.setRow(0, basis.getRow(0) * (-1));
+
+	btTransform trans;
+	trans.setFromOpenGLMatrix(basis.M);
+	body->setCenterOfMassTransform(trans);
+	body->setAngularVelocity(btVector3(0,0,0));
+	body->setLinearVelocity(btVector3(0,0,0));
 }
 
 float CGLUTApplication::getTimeStep()
@@ -409,6 +449,32 @@ void CGLUTApplication::mouseMove(int x, int y)
 		warp = true;
 
 	CameraFPS->mouseLook((float)deltaX, (float)deltaY);
+}
+
+bool CGLUTApplication::keyDown(char key)
+{
+	return KeyDown[key];
+}
+
+bool CGLUTApplication::keyUp(char key)
+{
+	return !KeyDown[key];
+}
+
+bool CGLUTApplication::keyPressed(char key)
+{
+	return KeyDown[key] && !KeyDownPrev[key];
+}
+
+bool CGLUTApplication::keyReleased(char key)
+{
+	return !KeyDown[key] && KeyDownPrev[key];
+}
+
+void CGLUTApplication::updateKeyStrokes()
+{
+	for (int i=0; i<256; i++)
+		KeyDownPrev[i] = KeyDown[i];
 }
 
 // ------------------------ HANDLERS -----------------------------

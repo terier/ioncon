@@ -26,23 +26,26 @@ struct SCheckpoint
 
 struct SCheckpointTracker
 {
-	SCheckpointTracker()
-	{
-		Object = 0;
-		LapNum = 1;
-		CurrentCheckpoint = 0;
-	}
-
-	SCheckpointTracker(CObject* object)
+	SCheckpointTracker(CObject* object = 0, const std::string& name = "Default")
 	{
 		Object = object;
 		LapNum = 1;
 		CurrentCheckpoint = 0;
+		Name = name;
 	}
 
 	CObject* Object;
+	std::string Name;
 	uint LapNum;
 	uint CurrentCheckpoint;
+};
+
+struct SCheckpointTrackerComparator
+{
+	bool operator() (const SCheckpointTracker& a, const SCheckpointTracker& b)
+	{
+		return a.LapNum > b.LapNum || (a.LapNum == b.LapNum && a.CurrentCheckpoint > b.CurrentCheckpoint);
+	}
 };
 
 // tracks checkpoints and progress for all objects
@@ -54,10 +57,14 @@ public:
 	virtual ~CObjectCheckpointController() {}
 
 	void addCheckpoint(const SCheckpoint& cp);
-	void addObjectTracker(CObject* object);
+	void addObjectTracker(CObject* object, const std::string& name = "Default");
 	uint getLapNum(CObject* object);
 	uint getCurrentCheckpoint(CObject* object);
+	const SCheckpointTracker& getTracker(uint i);
 	uint getNumberOfCheckpoints();
+	uint getNumberOfTrackers();
+
+	void sort();
 
 	virtual void animate(float dt);
 

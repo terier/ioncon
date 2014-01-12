@@ -41,6 +41,12 @@ public:
 	void mouseMove(int x, int y);
 
 	CCar* addCar(const char* propFile);
+	void resetCar(CCar* car);
+
+	bool keyDown(char key);
+	bool keyUp(char key);
+	bool keyPressed(char key);
+	bool keyReleased(char key);
 
 	virtual void displayFunc();
 	virtual void idleFunc();
@@ -53,6 +59,8 @@ public:
 	virtual void passiveMotionFunc(int x, int y);
 
 private:
+	void updateKeyStrokes();
+
 	bool DoubleBuffering;
 
 	CScene* Scene;
@@ -73,6 +81,7 @@ private:
 	CSpline* Spline;
 
 	bool KeyDown[256];
+	bool KeyDownPrev[256];
 };
 
 #endif
