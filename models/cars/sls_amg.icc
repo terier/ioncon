@@ -1,0 +1,14 @@
+﻿MaxSteer            0.2
+Mass                0.65
+SuspensionDamping   20
+SuspensionStiffness 100
+FrictionSlip        3.5
+EngineForce         9
+BrakeForce          0.22
+
+WheelPositionFrontLeft    -2.7    2.3    -5.0
+WheelPositionBackRight    2.7    2.2    4.1
+
+CarMesh   models/cars/sls_amg.obj
+HullMesh  models/cars/sls_amg_hull.obj
+WheelMesh models/cars/sls_amg_wheel.obj
