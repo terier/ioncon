@@ -71,16 +71,17 @@ void CGLUTApplication::init()
 	Scene = new CScene();
 	Physics = new CPhysicsWorld();
 	ShaderManager = new cwc::glShaderManager();
-	//Camera = new CCameraFPS();
-	//Camera->setPosition(vec3(15,10,30));
-	//Camera->setSpeed(50.f);
+	CameraFPS = new CCameraFPS();
+	CameraFPS->setPosition(vec3(15,10,30));
+	CameraFPS->setSpeed(200.f);
 
 	Camera = new CCameraFollower(0);
 	Camera->setDistance(20.f);
-	Camera->setDisplacement(vec3(0,10,0));
+	Camera->setDisplacement(vec3(0,8,0));
+	Camera->setViewDisplacement(vec3(0,-2,0));
 	Camera->setFar(3000.f);
 	Camera->setStiffness(50.f);
-	Camera->setSpeed(0.2f);
+	Camera->setSpeed(0.05f);
 
 	float v[4] = {1,1,1,1};
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, v);
@@ -103,7 +104,9 @@ void CGLUTApplication::init()
 	SRoadProperties roadprops;
 	loadRoadProperties("models/testroad.icr", roadprops);
 	roadprops.Subdiv = 1000;
-	spline = generateRoad(10, 800, 1000, PI * 0.1f);
+	spline = generateRoad(10, 1000, 500, PI * 0.1f);
+	//spline->makeCardinal(0.7f);
+	Spline = spline;
 	CMesh* roadMesh = new CMesh(spline, roadprops.Stencil, roadprops.Subdiv, roadprops.ScaleTexture, roadprops.ScaleStencil);
 	CObjectMesh* roadObject = new CObjectMesh(roadMesh);
 	roadObject->setTexture(0, roadtex);
@@ -129,11 +132,9 @@ void CGLUTApplication::init()
 	{
 		spline->getFrameBasis(t, basis);
 		float displace = 28;
-		basis.M[3] += basis.M[0] * displace;
-		basis.M[7] += basis.M[4] * displace;
-		basis.M[11] += basis.M[8] * displace;
+		basis.addColumn(3, basis.getColumn(0) * displace);
 		CObject* lamp = Scene->addObjectMesh(lampMesh);
-		lamp->setTransformation(basis.transpose());
+		lamp->setTransformation(basis.getTransposed());
 	}
 
 	// add checkpoints
@@ -150,108 +151,42 @@ void CGLUTApplication::init()
 	redSphere->setTexture(0, Scene->loadTexture("images/startflag.png"));
 	Scene->addObjectToRoot(redSphere);
 
+	// CARS -------------------------------------------------------------------
 
-	Vehicle = addCar("models/corvette.icc");
+	Vehicle = addCar("models/california.icc");
 	btTransform position;
 	position.setIdentity();
 	position.setOrigin(createBulletVector(spline->getPosition(0) + vec3(0,10,0)));
 	//Vehicle->setWorldTransform(position);
+	Vehicle->getPhysicsObject()->setCenterOfMassTransform(position);
 	cwc::glShader* phongShader = ShaderManager->loadfromFile("shaders/phong.vert", "shaders/phong.frag");
 	((CObjectMesh*)Vehicle->getRenderObject())->setShader(phongShader);
 	Camera->setFollowedObject(Vehicle->getRenderObject());
 	CPController->addObjectTracker(Vehicle->getRenderObject());
 
+	CCar* car2 = addCar("models/corvette.icc");
+	position.setIdentity();
+	position.setOrigin(createBulletVector(spline->getPosition(0.2f) + vec3(0,10,0)));
+	car2->getPhysicsObject()->setCenterOfMassTransform(position);
+	((CObjectMesh*)car2->getRenderObject())->setShader(phongShader);
+
+	CCar* car3 = addCar("models/california.icc");
+	position.setIdentity();
+	position.setOrigin(createBulletVector(spline->getPosition(0.15f) + vec3(0,10,0)));
+	car3->getPhysicsObject()->setCenterOfMassTransform(position);
+	((CObjectMesh*)car3->getRenderObject())->setShader(phongShader);
+
+	CCar* car4 = addCar("models/SL500.icc");
+	position.setIdentity();
+	position.setOrigin(createBulletVector(spline->getPosition(0.05f) + vec3(0,10,0)));
+	car4->getPhysicsObject()->setCenterOfMassTransform(position);
+	((CObjectMesh*)car4->getRenderObject())->setShader(phongShader);
+
 	Overlay = new COverlayText("", GLUT_BITMAP_HELVETICA_18, vec3(0,1,0), false);
 	//overlay->setParent(Vehicle->getRenderObject());
 	Scene->addObjectToRoot(Overlay);
 
-	// car1 - Porsche Carrera 911
-	/*CMesh* carMesh1 = new CMesh("models/cars/911.obj", "models/cars/");
-	CMesh* carHull1 = new CMesh("models/cars/911_hull.obj", "models/cars/");
-	btCollisionShape* carShape1 = Physics->generateConvexHullShape(carHull1);
-	CObjectMesh* carObject1 = Scene->addObjectMesh(carMesh1);
-	carObject1->setPosition(vec3(35,0,100));
-	Physics->addDynamicObject(carObject1, carShape1, 2.f);
-
-	// car2 - Ford Mustang GT500
-	CMesh* carMesh2 = new CMesh("models/cars/mustang.obj", "models/cars/");
-	CMesh* carHull2 = new CMesh("models/cars/mustang_hull.obj", "models/cars/");
-	btCollisionShape* carShape2 = Physics->generateConvexHullShape(carHull2);
-	CObjectMesh* carObject2 = Scene->addObjectMesh(carMesh2);
-	carObject2->setPosition(vec3(38,0,130));
-	Physics->addDynamicObject(carObject2, carShape2, 2.f);
-
-	// car3 - Porsche Carrera GT
-	CMesh* carMesh3 = new CMesh("models/cars/carreraGT.obj", "models/cars/");
-	CMesh* carHull3 = new CMesh("models/cars/carreraGT_hull.obj", "models/cars/");
-	btCollisionShape* carShape3 = Physics->generateConvexHullShape(carHull3);
-	CObjectMesh* carObject3 = Scene->addObjectMesh(carMesh3);
-	carObject3->setPosition(vec3(45,0,100));
-	Physics->addDynamicObject(carObject3, carShape3, 2.f);
-
-	// car4 - Ferrari California
-	CMesh* carMesh4 = new CMesh("models/cars/california.obj", "models/cars/");
-	CMesh* carHull4 = new CMesh("models/cars/california_hull.obj", "models/cars/");
-	btCollisionShape* carShape4 = Physics->generateConvexHullShape(carHull4);
-	CObjectMesh* carObject4 = Scene->addObjectMesh(carMesh4);
-	carObject4->setPosition(vec3(45,0,120));
-	Physics->addDynamicObject(carObject4, carShape4, 2.f);*/
-
-	// car5 - Mercedes SLS AMG
-	/*CMesh* carMesh5 = new CMesh("models/cars/sls_amg.obj", "models/cars/");
-	CMesh* carHull5 = new CMesh("models/cars/sls_amg_hull.obj", "models/cars/");
-	btCollisionShape* carShape5 = Physics->generateConvexHullShape(carHull5);
-	CObjectMesh* carObject5 = Scene->addObjectMesh(carMesh5);
-	carObject5->setPosition(vec3(55,0,150));
-	Physics->addDynamicObject(carObject5, carShape5, 2.f);
-	carObject5->setShader(phongShader);*/
-
-	// car6 - Mercedes SL 500
-	/*CMesh* carMesh6= new CMesh("models/cars/SL500.obj", "models/cars/");
-	CMesh* carHull6 = new CMesh("models/cars/SL500_hull.obj", "models/cars/");
-	btCollisionShape* carShape6 = Physics->generateConvexHullShape(carHull6);
-	CObjectMesh* carObject6 = Scene->addObjectMesh(carMesh6);
-	carObject6->setPosition(vec3(65,0,160));
-	Physics->addDynamicObject(carObject6, carShape6, 2.f);*/
-	
 	// ---------------------------------------------------------------------------------------------
-	
-	//block bigHouse
-	/*ObjectMesh* houseObject = Scene->addObjectMesh(houseMesh);
-	houseObject->setPosition(vec3(300,0,180));
-	houseObject->setShader(phongShader);
-
-	//block hotelBlock
-	CMesh* blockMesh = new CMesh("models/architecture/hotelBlock.obj", "models/architecture/");
-	CObjectMesh* blockObject = Scene->addObjectMesh(blockMesh);
-	blockObject->setPosition(vec3(270,0,-20));
-	blockObject->setShader(phongShader);
-
-	//block newYork
-	CMesh* newYorkMesh = new CMesh("models/architecture/newYorkStyle.obj", "models/architecture/");
-	CObjectMesh* newYorkObject = Scene->addObjectMesh(newYorkMesh);
-	newYorkObject->setPosition(vec3(160,50,130));
-	Physics->addStaticMeshObject(newYorkObject);
-	newYorkObject->setShader(phongShader);
-
-	//block businessBlok
-	CMesh* businessMesh = new CMesh("models/architecture/businessBlock.obj", "models/architecture/");
-	CObjectMesh* businessObject = Scene->addObjectMesh(businessMesh);
-	businessObject->setPosition(vec3(450,20,450));
-	businessObject->setRotation(vec3(0,-120,0));
-	businessObject->setShader(phongShader);
-
-	//block businessBlok2
-	CObjectMesh* businessObject2 = Scene->addObjectMesh(businessMesh);
-	businessObject2->setPosition(vec3(50,-10,300));
-	businessObject2->setRotation(vec3(0,60,0));
-	businessObject2->setShader(phongShader);
-
-	//city
-	CMesh* cityMesh = new CMesh("models/architecture/downtown_scenery.obj", "models/architecture/");
-	CObjectMesh* cityObject = Scene->addObjectMesh(cityMesh);
-	cityObject->setPosition(vec3(0,-50,1600));
-	cityObject->setShader(phongShader);*/
 
 	//test generate block
 	/*uint startTex = Scene->loadTexture("models/blockGenerator/blockStart2.png");
@@ -271,39 +206,6 @@ void CGLUTApplication::init()
 	{
 		Scene->addObjectToRoot(geneBlockObjVect[i]);
 	}*/
-
-	// physics demo
-	/*uint texture = Scene->loadTexture("images/art.png");
-	CObjectPlane* plane = new CObjectPlane(20.f, 5);
-	plane->setTexture(0, texture);
-	Scene->addObjectToRoot(plane);
-	btCollisionShape* planeShape = new btStaticPlaneShape(btVector3(0,1,0), 0);
-	CPhysicsObject* planeObject = new CPhysicsObject(plane, planeShape, Physics->getWorld(), 0.f);
-	planeObject->getRigidBody()->setRestitution(0.7f);
-
-	plane = new CObjectPlane(20.f, 5);
-	plane->setRotation(vec3(90.f * DEGTORAD, 0, 0));
-	plane->setPosition(vec3(0,20,0));
-	plane->setTexture(0, texture);
-	Scene->addObjectToRoot(plane);
-	planeShape = new btStaticPlaneShape(btVector3(0,0,1), 0);
-	planeObject = new CPhysicsObject(plane, planeShape, Physics->getWorld(), 0.f);
-	planeObject->getRigidBody()->setRestitution(0.7f);
-
-	btCollisionShape* sphereShape = new btSphereShape(1.f);
-	for (int i=0; i<50; i++)
-	{
-		CObjectSphere* sphere = new CObjectSphere(1.f);
-		Scene->addObjectToRoot(sphere);
-		sphere->setPosition(vec3((float)(rand()%20), (float)(rand()%10), (float)(rand()%20)));
-		CPhysicsObject* sphereObject = new CPhysicsObject(sphere, sphereShape, Physics->getWorld(), 1.f);
-		sphereObject->getRigidBody()->setRestitution(0.7f);
-	}
-
-	// testing convex hull
-	CMesh* gunmesh = new CMesh("models/gunhull.obj", "models/");
-	btConvexHullShape* meshshape = Physics->generateConvexHullShape(gunmesh);
-	CPhysicsObject* physicsobject = new CPhysicsObject(obj, meshshape, Physics->getWorld(), 3.f);*/
 }
 
 void CGLUTApplication::step()
@@ -312,14 +214,19 @@ void CGLUTApplication::step()
 	Physics->getWorld()->stepSimulation(dt, 10);
 	Scene->animate(dt);
 
-	//if (KeyDown['w'] || KeyDown['W'])
-	//	Camera->moveForward(dt);
-	//if (KeyDown['s'] || KeyDown['S'])
-	//	Camera->moveBackward(dt);
-	//if (KeyDown['a'] || KeyDown['A'])
-	//	Camera->moveLeft(dt);
-	//if (KeyDown['d'] || KeyDown['D'])
-	//	Camera->moveRight(dt);
+	if (KeyDown['1'])
+		Scene->setActiveCamera(Camera);
+	if (KeyDown['2'])
+		Scene->setActiveCamera(CameraFPS);
+
+	if (KeyDown['w'] || KeyDown['W'])
+		CameraFPS->moveForward(dt);
+	if (KeyDown['s'] || KeyDown['S'])
+		CameraFPS->moveBackward(dt);
+	if (KeyDown['a'] || KeyDown['A'])
+		CameraFPS->moveLeft(dt);
+	if (KeyDown['d'] || KeyDown['D'])
+		CameraFPS->moveRight(dt);
 
 	if (KeyDown['i'] || KeyDown['I'] || KeyDown['k'] || KeyDown['K'])
 	{
@@ -363,6 +270,43 @@ void CGLUTApplication::step()
 		current = ln;
 	}
 
+	// basic AI
+	for (size_t i=0; i<Vehicles.size(); i++)
+	{
+		if (Vehicles[i] == Vehicle)
+			continue;
+		//VehiclesClosest[i]->setPosition(Spline->getPosition(Spline->getClosestPoint(Vehicles[i]->getRenderObject()->getPosition())));
+		float t = Spline->getClosestPoint(Vehicles[i]->getRenderObject()->getPosition());
+		float optimalSpeed = 1.f / (0.001f + 0.2f * Spline->getCurvature(t));
+		float currentSpeed = abs(Vehicles[i]->getVehicle()->getCurrentSpeedKmHour());
+		if (currentSpeed < optimalSpeed)
+		{
+			Vehicles[i]->accelerate();
+			Vehicles[i]->brakeRelease();
+		}
+		else
+		{
+			Vehicles[i]->idle();
+			Vehicles[i]->brake();
+		}
+		vec3 fwd = createIonconVector(Vehicles[i]->getVehicle()->getChassisWorldTransform().getBasis().getColumn(0));
+		//vec3 D = Spline->getDerivative(t + currentSpeed * 0.0001f).norm();
+		//vec3 D = Spline->getDerivative(t + 0.05f).norm();
+
+		int nforward = 5;
+		for (int j=0; j<nforward; j++)
+		{
+		}
+		vec3 D = Spline->getDerivative(t + 0.05f).norm();
+		vec3 S = Spline->getBinormal(t).norm();
+		float steerCurvature = fwd.dot(D) * 0.5f;
+		Vehicles[i]->steer(steerCurvature, dt);
+
+		//std::ostringstream str;
+		//str << optimalSpeed;
+		//Overlays[i]->setText(str.str());
+	}
+
 	std::ostringstream ss;
 	ss << std::endl;
 	ss << "Speed: ";
@@ -398,6 +342,11 @@ CCar* CGLUTApplication::addCar(const char* propFile)
 	CCar* car = Physics->addCar(props, carObject, carShape, wheelMesh);
 	for (int i=0; i<4; i++)
 		Scene->addObjectToRoot(car->getWheelObject(i));
+	Vehicles.push_back(car);
+	//VehiclesClosest.push_back(Scene->addObjectSphere(2));
+	COverlayText* over = new COverlayText("", GLUT_BITMAP_HELVETICA_18, vec3(0,5,0), true);
+	over->setParent(carObject);
+	Overlays.push_back(over);
 	return car;
 }
 
@@ -448,7 +397,7 @@ void CGLUTApplication::mouseMove(int x, int y)
 	else
 		warp = true;
 
-	//Camera->mouseLook((float)deltaX, (float)deltaY);
+	CameraFPS->mouseLook((float)deltaX, (float)deltaY);
 }
 
 // ------------------------ HANDLERS -----------------------------
@@ -505,7 +454,7 @@ void CGLUTApplication::mouseFunc(int button, int state, int x, int y)
 		//CObject* obj = new CObjectCube(1.f);
 		CObject* obj = new CObjectSphere(1.f);
 		Scene->addObjectToRoot(obj);
-		obj->setPosition(Camera->getPosition());
+		obj->setPosition(Scene->getActiveCamera()->getPosition());
 		obj->setTexture(0, tex);
 		//btCollisionShape* shp = new btBoxShape(btVector3(1,1,1));
 		btCollisionShape* shp = new btSphereShape(1.f);

@@ -58,14 +58,19 @@ private:
 	CScene* Scene;
 	CPhysicsWorld* Physics;
 	cwc::glShaderManager* ShaderManager;
+	btClock Clock;
+	CObjectCheckpointController* CPController;
+
 	CCameraFPS* CameraFPS;
 	CCameraFollower* Camera;
 	CCameraFollower* CameraBumper;
-	CObjectCheckpointController* CPController;
-	btClock Clock;
 	CCar* Vehicle;
-	CObject* wheel[4];
+	std::vector<CCar*> Vehicles;
+	//std::vector<CObject*> VehiclesClosest;
+	std::vector<COverlayText*> Overlays;
+
 	COverlayText* Overlay;
+	CSpline* Spline;
 
 	bool KeyDown[256];
 };

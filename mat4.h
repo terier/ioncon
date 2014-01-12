@@ -22,20 +22,33 @@ struct mat4
 	mat4(MATRIX_TYPE mt = MT_IDENTITY, float* data = 0);
 	mat4(const mat4& m);
 
-	mat4& setNull();
-	mat4& setIdentity();
-	mat4& setTranslate(const vec3& v);
-	mat4& setScale(const vec3& v);
-	mat4& setRotateX(float a);
-	mat4& setRotateY(float a);
-	mat4& setRotateZ(float a);
-	mat4& setRotate(const vec3& a);
-	mat4& setProjection(float d);
+	mat4& makeNull();
+	mat4& makeIdentity();
+	mat4& makeTranslate(const vec3& v);
+	mat4& makeScale(const vec3& v);
+	mat4& makeRotateX(float a);
+	mat4& makeRotateY(float a);
+	mat4& makeRotateZ(float a);
+	mat4& makeRotate(const vec3& a);
+	mat4& makeProjection(float d);
 
 	mat4& setTo(const mat4& m);
 
-	mat4& transpose();
-	mat4 getTransposed();
+	mat4& setVector(int i1, int i2, int i3, const vec3& v);
+	mat4& addVector(int i1, int i2, int i3, const vec3& v);
+	mat4& mulVector(int i1, int i2, int i3, float a);
+	vec3 getVector(int i1, int i2, int i3) const;
+	mat4& setColumn(int i, const vec3& v);
+	mat4& addColumn(int i, const vec3& v);
+	mat4& mulColumn(int i, float a);
+	vec3 getColumn(int i);
+	mat4& setRow(int i, const vec3& v);
+	mat4& addRow(int i, const vec3& v);
+	mat4& mulRow(int i, float a);
+	vec3 getRow(int i);
+
+	mat4& makeTransposed();
+	mat4 getTransposed() const;
 
 	mat4 operator*(const mat4& m) const;
 	vec3 operator*(const vec3& v) const;

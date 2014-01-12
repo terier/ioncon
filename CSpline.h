@@ -24,6 +24,10 @@ public:
 	vec3 getBinormal(float t) const;
 	vec3 getUpVector(float t) const;
 
+	float getCurvature(float t) const;
+
+	float getClosestPoint(const vec3& v) const;
+
 	// transformation from stencil to UDS frame
 	void getFrameBasis(float t, mat4& result) const;
 

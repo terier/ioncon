@@ -129,25 +129,11 @@ void CSpline::getFrameBasis(float t, mat4& result) const
 	U = U.norm();
 	vec3 S = D.cross(U);
 
-	// [ --S-- | ]
-	// [ --U-- P ]
-	// [ --D-- | ]
-	// [ 0 0 0 1 ] ne, to je narobe ...
-	result.M[0 ] = S.X;
-	result.M[1 ] = U.X;
-	result.M[2 ] = D.X;
-	result.M[3 ] = P.X;
-	result.M[4 ] = S.Y;
-	result.M[5 ] = U.Y;
-	result.M[6 ] = D.Y;
-	result.M[7 ] = P.Y;
-	result.M[8 ] = S.Z;
-	result.M[9 ] = U.Z;
-	result.M[10] = D.Z;
-	result.M[11] = P.Z;
-	result.M[12] = 0;
-	result.M[13] = 0;
-	result.M[14] = 0;
+	result.setColumn(0, S);
+	result.setColumn(1, U);
+	result.setColumn(2, D);
+	result.setColumn(3, P);
+	result.setRow(3, vec3());
 	result.M[15] = 1;
 }
 
@@ -160,4 +146,65 @@ void CSpline::makeCardinal(float c)
 void CSpline::makeCatmullRom()
 {
 	makeCardinal(0);
+}
+
+float CSpline::getCurvature(float t) const
+{
+	vec3 d1 = getDerivative(t);
+	vec3 d2 = getSecondDerivative(t);
+	float c = d1.len();
+	return (d1.cross(d2)).len() / (c * c * c);
+}
+
+float CSpline::getClosestPoint(const vec3& v) const
+{
+	float tend = (float) Points.size();
+
+	float tmin = 0;
+	float distmin = -1;
+	float dist;
+	for (float t=0; t<tend; t+=tend*0.02f)
+	{
+		dist = (getPosition(t) - v).lensq();
+		if (dist < distmin || distmin < 0)
+		{
+			distmin = dist;
+			tmin = t;
+		}
+	}
+
+	float eps = 1e-2f;
+	float t = tmin;
+	float dist1, dist2, dist3;
+	float d1, d2, grad, curv;
+	float t1, t2, t3;
+
+	// refine with quadratic minimization
+	/*for (int i=0; i<4; i++)
+	{
+		t1 = t - eps;
+		t2 = t;
+		t3 = t + eps;
+		dist1 = (getPosition(t1) - v).lensq();
+		dist2 = (getPosition(t2) - v).lensq();
+		dist3 = (getPosition(t3) - v).lensq();
+		d1 = (dist2 - dist1) / eps;
+		d2 = (dist3 - dist2) / eps;
+		t = 0.5f * ((t2*t2-t3*t3)*dist1 + (t3*t3-t1*t1)*dist1 + (t1*t1-t2*t2)*dist3) /
+			((t2-t3)*dist1 + (t3-t1)*dist2 + (t1-t2)*dist3);
+	}*/
+
+	// refine with newton's method
+	for (int i=0; i<4; i++)
+	{
+		dist1 = (getPosition(t - eps) - v).lensq();
+		dist2 = (getPosition(t) - v).lensq();
+		dist3 = (getPosition(t + eps) - v).lensq();
+		d1 = (dist2 - dist1) / eps;
+		d2 = (dist3 - dist2) / eps;
+		grad = (dist3 - dist1) / (2 * eps);
+		curv = (d2 - d1) / eps;
+		t -= grad / curv;
+	}
+	return t;
 }

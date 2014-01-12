@@ -5,39 +5,39 @@ mat4::mat4(MATRIX_TYPE mt, float* v)
 	switch (mt)
 	{
 	case MT_NULL:
-		setNull();
+		makeNull();
 		break;
 
 	case MT_IDENTITY:
-		setIdentity();
+		makeIdentity();
 		break;
 
 	case MT_TRANSLATE:
-		setTranslate(vec3(v[0], v[1], v[2]));
+		makeTranslate(vec3(v[0], v[1], v[2]));
 		break;
 
 	case MT_SCALE:
-		setScale(vec3(v[0], v[1], v[2]));
+		makeScale(vec3(v[0], v[1], v[2]));
 		break;
 
 	case MT_ROTATEX:
-		setRotateX(v[0]);
+		makeRotateX(v[0]);
 		break;
 
 	case MT_ROTATEY:
-		setRotateY(v[0]);
+		makeRotateY(v[0]);
 		break;
 
 	case MT_ROTATEZ:
-		setRotateZ(v[0]);
+		makeRotateZ(v[0]);
 		break;
 
 	case MT_ROTATE:
-		setRotate(vec3(v[0], v[1], v[2]));
+		makeRotate(vec3(v[0], v[1], v[2]));
 		break;
 
 	case MT_PROJECTION:
-		setProjection(v[0]);
+		makeProjection(v[0]);
 		break;
 	}
 }
@@ -47,44 +47,44 @@ mat4::mat4(const mat4& m)
 	setTo(m);
 }
 
-mat4& mat4::setNull()
+mat4& mat4::makeNull()
 {
 	for (int i=0; i<16; i++)
 		M[i] = 0;
 	return *this;
 }
 
-mat4& mat4::setIdentity()
+mat4& mat4::makeIdentity()
 {
-	setNull();
+	makeNull();
 	M[0] = M[5] = M[10] = M[15] = 1;
 	return *this;
 }
 
-mat4& mat4::setTranslate(const vec3& v)
+mat4& mat4::makeTranslate(const vec3& v)
 {
-	setIdentity();
+	makeIdentity();
 	M[3] = v.X;
 	M[7] = v.Y;
 	M[11] = v.Z;
 	return *this;
 }
 
-mat4& mat4::setScale(const vec3& v)
+mat4& mat4::makeScale(const vec3& v)
 {
-	setNull();
+	makeNull();
 	M[0] = v.X;
 	M[5] = v.Y;
 	M[10] = v.Z;
 	return *this;
 }
 
-mat4& mat4::setRotateX(float a)
+mat4& mat4::makeRotateX(float a)
 {
 	float c = cos(a);
 	float s = sin(a);
 
-	setIdentity();
+	makeIdentity();
 	M[5] = M[10] = c;
 	M[6] = -s;
 	M[9] = s;
@@ -92,12 +92,12 @@ mat4& mat4::setRotateX(float a)
 	return *this;
 }
 
-mat4& mat4::setRotateY(float a)
+mat4& mat4::makeRotateY(float a)
 {
 	float c = cos(a);
 	float s = sin(a);
 
-	setIdentity();
+	makeIdentity();
 	M[0] = M[10] = c;
 	M[8] = -s;
 	M[2] = s;
@@ -105,12 +105,12 @@ mat4& mat4::setRotateY(float a)
 	return *this;
 }
 
-mat4& mat4::setRotateZ(float a)
+mat4& mat4::makeRotateZ(float a)
 {
 	float c = cos(a);
 	float s = sin(a);
 
-	setIdentity();
+	makeIdentity();
 	M[0] = M[5] = c;
 	M[1] = -s;
 	M[4] = s;
@@ -118,7 +118,7 @@ mat4& mat4::setRotateZ(float a)
 	return *this;
 }
 
-mat4& mat4::setRotate(const vec3& a)
+mat4& mat4::makeRotate(const vec3& a)
 {
 	float cx = cos(a.X);
 	float sx = sin(a.X);
@@ -144,9 +144,9 @@ mat4& mat4::setRotate(const vec3& a)
 	return *this;
 }
 
-mat4& mat4::setProjection(float d)
+mat4& mat4::makeProjection(float d)
 {
-	setIdentity();
+	makeIdentity();
 	M[15] = 0;
 	M[14] = 1.f / d;
 	return *this;
@@ -201,7 +201,7 @@ mat4& mat4::operator*=(const mat4& m)
 	return *this;
 }
 
-mat4& mat4::transpose()
+mat4& mat4::makeTransposed()
 {
 	float T;
 	for (int i=0; i<3; i++)
@@ -216,11 +216,84 @@ mat4& mat4::transpose()
 	return *this;
 }
 
-mat4 mat4::getTransposed()
+mat4 mat4::getTransposed() const
 {
 	mat4 ret(MT_NULL);
 	for (int i=0; i<4; i++)
 		for (int j=0; j<4; j++)
 			ret.M[i+4*j] = M[j+4*i];
 	return ret;
+}
+
+mat4& mat4::setVector(int i1, int i2, int i3, const vec3& v)
+{
+	M[i1] = v.X;
+	M[i2] = v.Y;
+	M[i3] = v.Z;
+	return *this;
+}
+
+mat4& mat4::addVector(int i1, int i2, int i3, const vec3& v)
+{
+	M[i1] += v.X;
+	M[i2] += v.Y;
+	M[i3] += v.Z;
+	return *this;
+}
+
+mat4& mat4::mulVector(int i1, int i2, int i3, float a)
+{
+	M[i1] *= a;
+	M[i2] *= a;
+	M[i3] *= a;
+	return *this;
+}
+
+vec3 mat4::getVector(int i1, int i2, int i3) const
+{
+	return vec3(M[i1], M[i2], M[i3]);
+}
+
+mat4& mat4::setColumn(int i, const vec3& v)
+{
+	return setVector(i, i + 4, i + 8, v);
+}
+
+mat4& mat4::addColumn(int i, const vec3& v)
+{
+	return addVector(i, i + 4, i + 8, v);
+}
+
+mat4& mat4::mulColumn(int i, float a)
+{
+	return mulVector(i, i + 4, i + 8, a);
+}
+
+vec3 mat4::getColumn(int i)
+{
+	return getVector(i, i + 4, i + 8);
+}
+
+mat4& mat4::setRow(int i, const vec3& v)
+{
+	int j = i * 4;
+	return setVector(j, j + 1, j + 2, v);
+}
+
+mat4& mat4::addRow(int i, const vec3& v)
+{
+	int j = i * 4;
+	return addVector(j, j + 1, j + 2, v);
+}
+
+mat4& mat4::mulRow(int i, float a)
+{
+	int j = i * 4;
+	return mulVector(j, j + 1, j + 2, a);
+}
+
+vec3 mat4::getRow(int i)
+{
+	int j = i * 4;
+	return getVector(j, j + 1, j + 2);
 }

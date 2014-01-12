@@ -58,6 +58,6 @@ void CObject::transform()
 
 void CObject::updateTransformation()
 {
-	Transformation.setIdentity();
-	(Transformation.setTranslate(Position) *= mat4().setRotate(Rotation)).transpose();
+	Transformation.makeIdentity();
+	(Transformation.makeTranslate(Position) *= mat4().makeRotate(Rotation)).makeTransposed();
 }

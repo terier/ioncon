@@ -35,7 +35,9 @@ CPhysicsObject(chasisObject, chasisShape, props.Mass),
 
 CCar::~CCar()
 {
-	// TODO destroy btvehicle & wheel objects
+	for (int i=0; i<4; i++)
+		delete Wheel[i];
+	// TODO destroy btvehicle
 }
 
 void CCar::updateWheelTransform()
